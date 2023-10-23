@@ -7,12 +7,15 @@
 //! Add the `--colored` arg to run with color tinted sprites. This will cause the sprites to be rendered
 //! in multiple batches, reducing performance but useful for testing.
 
+use std::time::Duration;
+
 use bevy::{
     diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
     prelude::*,
     window::{PresentMode, WindowPlugin},
 };
 
+use bevy_internal::winit::WinitSettings;
 use rand::Rng;
 
 const CAMERA_SPEED: f32 = 1000.0;
@@ -27,6 +30,15 @@ fn main() {
         .insert_resource(ColorTint(
             std::env::args().nth(1).unwrap_or_default() == "--colored",
         ))
+        .insert_resource(WinitSettings {
+            focused_mode:bevy::winit::UpdateMode::Reactive {
+                max_wait: Duration::MAX,
+            },
+            unfocused_mode: bevy::winit::UpdateMode::Reactive {
+                max_wait: Duration::MAX,
+            },
+            ..default()
+        })
         // Since this is also used as a benchmark, we want it to display performance data.
         .add_plugins((
             LogDiagnosticsPlugin::default(),
