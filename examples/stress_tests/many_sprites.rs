@@ -42,7 +42,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(
             Update,
-            (print_sprite_count, move_camera.after(print_sprite_count)),
+            (print_sprite_count, move_camera.after(print_sprite_count), simulate_update_logic),
         )
         .run();
 }
@@ -102,6 +102,23 @@ fn move_camera(time: Res<Time>, mut camera_query: Query<&mut Transform, With<Cam
     camera_transform.rotate_z(time.delta_seconds() * 0.5);
     *camera_transform = *camera_transform
         * Transform::from_translation(Vec3::X * CAMERA_SPEED * time.delta_seconds());
+}
+
+pub fn simulate_bottleneck(i: usize) {
+    let mut data = 0;
+    for _ in 0..i {
+        // Expensive computation here, or just a no-op
+        // To prevent the compiler from optimizing this loop away, we use `black_box`
+        data = std::hint::black_box(data + 1);
+    }
+    // Use the data to make sure the loop's result is used, preventing removal
+    if data == 0 {
+        panic!("This should never happen");
+    }
+}
+
+fn simulate_update_logic() {
+    simulate_bottleneck(100 * 5_000);
 }
 
 #[derive(Deref, DerefMut)]

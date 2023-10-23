@@ -368,6 +368,7 @@ pub fn extract_sprites(
         )>,
     >,
 ) {
+    simulate_bottleneck(500_000);
     extracted_sprites.sprites.clear();
     for (entity, visibility, sprite, transform, handle) in sprite_query.iter() {
         if !visibility.is_visible() {
@@ -480,6 +481,19 @@ pub struct ImageBindGroups {
     values: HashMap<Handle<Image>, BindGroup>,
 }
 
+pub fn simulate_bottleneck(i: usize) {
+    let mut data = 0;
+    for _ in 0..i {
+        // Expensive computation here, or just a no-op
+        // To prevent the compiler from optimizing this loop away, we use `black_box`
+        data = std::hint::black_box(data + 1);
+    }
+    // Use the data to make sure the loop's result is used, preventing removal
+    if data == 0 {
+        panic!("This should never happen");
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 pub fn queue_sprites(
     mut commands: Commands,
@@ -514,6 +528,8 @@ pub fn queue_sprites(
             }
         };
     }
+
+    simulate_bottleneck(extracted_sprites.sprites.len() * 5_000);
 
     let msaa_key = SpritePipelineKey::from_msaa_samples(msaa.samples());
 
