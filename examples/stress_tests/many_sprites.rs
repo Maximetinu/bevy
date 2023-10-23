@@ -42,7 +42,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(
             Update,
-            (print_sprite_count, move_camera.after(print_sprite_count), simulate_update_logic),
+            (print_sprite_count, move_camera.after(print_sprite_count), simulate_nonvisual_calculations),
         )
         .run();
 }
@@ -105,6 +105,9 @@ fn move_camera(time: Res<Time>, mut camera_query: Query<&mut Transform, With<Cam
     camera_transform.rotate_z(time.delta_seconds() * 0.5);
     *camera_transform = *camera_transform
         * Transform::from_translation(Vec3::X * CAMERA_SPEED * time.delta_seconds());
+    
+    // simulate visual calculations (i.e. physics calculations)
+    simulate_bottleneck(100 * 5_000);
 }
 
 pub fn simulate_bottleneck(i: usize) {
@@ -120,7 +123,8 @@ pub fn simulate_bottleneck(i: usize) {
     }
 }
 
-fn simulate_update_logic() {
+// simulate non-visual calculations (i.e. navmap update triggered by furniture spawning outside of the screen)
+fn simulate_nonvisual_calculations() {
     simulate_bottleneck(100 * 5_000);
 }
 
