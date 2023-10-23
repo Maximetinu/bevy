@@ -97,7 +97,10 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, color_tint: Res<Color
 }
 
 // System for rotating and translating the camera
-fn move_camera(time: Res<Time>, mut camera_query: Query<&mut Transform, With<Camera>>) {
+fn move_camera(time: Res<Time>, mut camera_query: Query<&mut Transform, With<Camera>>, keyboard: Res<Input<KeyCode>>) {
+    if !keyboard.pressed(KeyCode::Space) {
+        return;
+    }
     let mut camera_transform = camera_query.single_mut();
     camera_transform.rotate_z(time.delta_seconds() * 0.5);
     *camera_transform = *camera_transform
