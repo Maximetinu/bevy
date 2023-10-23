@@ -483,7 +483,7 @@ pub struct ImageBindGroups {
 
 pub fn simulate_bottleneck(i: usize) {
     let mut data = 0;
-    for _ in 0..i {
+    for _ in 0..i+1 {
         // Expensive computation here, or just a no-op
         // To prevent the compiler from optimizing this loop away, we use `black_box`
         data = std::hint::black_box(data + 1);
