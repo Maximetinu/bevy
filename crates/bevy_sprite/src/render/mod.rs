@@ -31,7 +31,7 @@ use bevy_render::{
         ComputedVisibility, ExtractedView, Msaa, ViewTarget, ViewUniform, ViewUniformOffset,
         ViewUniforms, VisibleEntities,
     },
-    Extract,
+    Extract, camera::ShouldRender,
 };
 use bevy_transform::components::GlobalTransform;
 use bevy_utils::FloatOrd;
@@ -296,7 +296,7 @@ impl SpecializedRenderPipeline for SpritePipeline {
     }
 }
 
-#[derive(Component, Clone, Copy)]
+#[derive(Component, Clone, Copy, PartialEq)]
 pub struct ExtractedSprite {
     pub entity: Entity,
     pub transform: GlobalTransform,
@@ -316,6 +316,7 @@ pub struct ExtractedSprite {
 #[derive(Resource, Default)]
 pub struct ExtractedSprites {
     pub sprites: Vec<ExtractedSprite>,
+    pub last_frame_sprites: Vec<ExtractedSprite>,
 }
 
 #[derive(Resource, Default)]
@@ -367,8 +368,10 @@ pub fn extract_sprites(
             &Handle<TextureAtlas>,
         )>,
     >,
+    mut should_render: ResMut<ShouldRender>,
 ) {
-    simulate_bottleneck(500_000);
+    // simulate_bottleneck(500_000);
+    extracted_sprites.last_frame_sprites = extracted_sprites.sprites.clone();
     extracted_sprites.sprites.clear();
     for (entity, visibility, sprite, transform, handle) in sprite_query.iter() {
         if !visibility.is_visible() {
@@ -420,6 +423,11 @@ pub fn extract_sprites(
             });
         }
     }
+    **should_render = if extracted_sprites.sprites != extracted_sprites.last_frame_sprites {
+        true
+    } else {
+        false
+    };
 }
 
 #[repr(C)]
@@ -509,7 +517,7 @@ pub fn queue_sprites(
     mut image_bind_groups: ResMut<ImageBindGroups>,
     gpu_images: Res<RenderAssets<Image>>,
     msaa: Res<Msaa>,
-    mut extracted_sprites: ResMut<ExtractedSprites>,
+    (mut extracted_sprites, should_render): (ResMut<ExtractedSprites>, Res<ShouldRender>),
     mut views: Query<(
         &mut RenderPhase<Transparent2d>,
         &VisibleEntities,
@@ -519,6 +527,13 @@ pub fn queue_sprites(
     )>,
     events: Res<SpriteAssetEvents>,
 ) {
+    // if extracted_sprites.sprites == extracted_sprites.last_frame_sprites {
+    //     return;
+    // }
+    if !**should_render {
+        return;
+    }
+
     // If an image has changed, the GpuImage has (probably) changed
     for event in &events.images {
         match event {
@@ -529,7 +544,7 @@ pub fn queue_sprites(
         };
     }
 
-    simulate_bottleneck(extracted_sprites.sprites.len() * 5_000);
+    simulate_bottleneck(25_000_000);
 
     let msaa_key = SpritePipelineKey::from_msaa_samples(msaa.samples());
 

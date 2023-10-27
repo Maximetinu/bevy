@@ -119,7 +119,7 @@ fn move_camera(time: Res<Time>, mut camera_query: Query<&mut Transform, With<Cam
         * Transform::from_translation(Vec3::X * CAMERA_SPEED * time.delta_seconds());
     
     // simulate visual calculations (i.e. physics calculations)
-    simulate_bottleneck(100 * 5_000);
+    // simulate_bottleneck(100 * 5_000);
 }
 
 pub fn simulate_bottleneck(i: usize) {
@@ -137,7 +137,7 @@ pub fn simulate_bottleneck(i: usize) {
 
 // simulate non-visual calculations (i.e. navmap update triggered by furniture spawning outside of the screen)
 fn simulate_nonvisual_calculations() {
-    simulate_bottleneck(100 * 5_000);
+    // simulate_bottleneck(100 * 5_000);
 }
 
 #[derive(Deref, DerefMut)]
