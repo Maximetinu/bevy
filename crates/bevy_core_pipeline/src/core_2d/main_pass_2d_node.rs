@@ -60,13 +60,6 @@ impl Node for MainPass2dNode {
             let mut render_pass = render_context.begin_tracked_render_pass(RenderPassDescriptor {
                 label: Some("main_pass_2d"),
                 color_attachments: &[Some(target.get_color_attachment(Operations {
-                    // load: match camera_2d.clear_color {
-                    //     ClearColorConfig::Default => {
-                    //         LoadOp::Clear(world.resource::<ClearColor>().0.into())
-                    //     }
-                    //     ClearColorConfig::Custom(color) => LoadOp::Clear(color.into()),
-                    //     ClearColorConfig::None => LoadOp::Load,
-                    // },
                     load: if !camera.should_render {
                         LoadOp::Load
                     } else {
