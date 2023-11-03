@@ -257,6 +257,15 @@ impl SpecializedRenderPipeline for SpritePipeline {
             false => TextureFormat::bevy_default(),
         };
 
+        let blend_state = BlendState {
+            color: BlendComponent {
+                src_factor: BlendFactor::Dst,
+                dst_factor: BlendFactor::One,
+                operation: BlendOperation::Add,
+            },
+            alpha: BlendComponent::OVER,
+        };
+
         RenderPipelineDescriptor {
             vertex: VertexState {
                 shader: SPRITE_SHADER_HANDLE.typed::<Shader>(),
@@ -270,7 +279,7 @@ impl SpecializedRenderPipeline for SpritePipeline {
                 entry_point: "fragment".into(),
                 targets: vec![Some(ColorTargetState {
                     format,
-                    blend: Some(BlendState::ALPHA_BLENDING),
+                    blend: Some(blend_state),
                     write_mask: ColorWrites::ALL,
                 })],
             }),
