@@ -1,7 +1,7 @@
 mod access;
 mod parse;
 
-use std::fmt;
+use core::fmt;
 
 use crate::Reflect;
 use access::Access;

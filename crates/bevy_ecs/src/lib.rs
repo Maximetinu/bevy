@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
@@ -28,6 +29,8 @@ pub mod prelude {
     #[doc(hidden)]
     #[cfg(feature = "bevy_reflect")]
     pub use crate::reflect::{AppTypeRegistry, ReflectComponent, ReflectResource};
+    #[cfg(feature = "std")]
+    pub use crate::system::ParallelCommands;
     #[doc(hidden)]
     pub use crate::{
         bundle::Bundle,
@@ -43,8 +46,8 @@ pub mod prelude {
             OnTransition, Schedule, Schedules, State, States, SystemSet,
         },
         system::{
-            Commands, Deferred, In, IntoSystem, Local, NonSend, NonSendMut, ParallelCommands,
-            ParamSet, Query, ReadOnlySystem, Res, ResMut, Resource, System, SystemParamFunction,
+            Commands, Deferred, In, IntoSystem, Local, NonSend, NonSendMut, ParamSet, Query,
+            ReadOnlySystem, Res, ResMut, Resource, System, SystemParamFunction,
         },
         world::{EntityMut, EntityRef, EntityWorldMut, FromWorld, World},
     };
@@ -69,7 +72,7 @@ mod tests {
         world::{EntityRef, Mut, World},
     };
     use bevy_tasks::{ComputeTaskPool, TaskPool};
-    use std::{
+    use core::{
         any::TypeId,
         marker::PhantomData,
         sync::{

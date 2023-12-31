@@ -2,14 +2,17 @@ use crate::{
     self as bevy_reflect, NamedField, Reflect, ReflectMut, ReflectOwned, ReflectRef, TypeInfo,
     TypePath, TypePathTable,
 };
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Cow;
 use bevy_reflect_derive::impl_type_path;
 use bevy_utils::{Entry, HashMap};
-use std::fmt::{Debug, Formatter};
-use std::{
+use core::fmt::{Debug, Formatter};
+use core::{
     any::{Any, TypeId},
-    borrow::Cow,
     slice::Iter,
 };
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 /// A trait used to power [struct-like] operations via [reflection].
 ///
@@ -468,7 +471,7 @@ impl Reflect for DynamicStruct {
         struct_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "DynamicStruct(")?;
         struct_debug(self, f)?;
         write!(f, ")")
@@ -483,7 +486,7 @@ impl Reflect for DynamicStruct {
 impl_type_path!((in bevy_reflect) DynamicStruct);
 
 impl Debug for DynamicStruct {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         self.debug(f)
     }
 }
@@ -542,7 +545,7 @@ pub fn struct_partial_eq<S: Struct>(a: &S, b: &dyn Reflect) -> Option<bool> {
 /// // }
 /// ```
 #[inline]
-pub fn struct_debug(dyn_struct: &dyn Struct, f: &mut Formatter<'_>) -> std::fmt::Result {
+pub fn struct_debug(dyn_struct: &dyn Struct, f: &mut Formatter<'_>) -> core::fmt::Result {
     let mut debug = f.debug_struct(
         dyn_struct
             .get_represented_type_info()

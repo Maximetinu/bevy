@@ -68,6 +68,7 @@ default = [
   "tonemapping_luts",
   "default_font",
   "webgl2",
+  "std",
 ]
 
 # Force dynamic linking, which improves iterative compile times
@@ -289,6 +290,10 @@ file_watcher = ["bevy_internal/file_watcher"]
 # Enables watching in memory asset providers for Bevy Asset hot-reloading
 embedded_watcher = ["bevy_internal/embedded_watcher"]
 
+std = ["bevy_dylib/std", "bevy_internal/std", "serde/std"]
+
+alloc = ["serde/alloc"]
+
 [dependencies]
 bevy_dylib = { path = "crates/bevy_dylib", version = "0.12.0", default-features = false, optional = true }
 bevy_internal = { path = "crates/bevy_internal", version = "0.12.0", default-features = false }
@@ -297,7 +302,7 @@ bevy_internal = { path = "crates/bevy_internal", version = "0.12.0", default-fea
 rand = "0.8.0"
 ron = "0.8.0"
 flate2 = "1.0"
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1", default-features = false, features = ["derive"] }
 bytemuck = "1.7"
 # Needed to poll Task examples
 futures-lite = "2.0.1"

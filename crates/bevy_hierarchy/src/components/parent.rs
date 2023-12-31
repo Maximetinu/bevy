@@ -5,7 +5,7 @@ use bevy_ecs::{
     entity::{Entity, EntityMapper, MapEntities},
     world::{FromWorld, World},
 };
-use std::ops::Deref;
+use core::ops::Deref;
 
 /// Holds a reference to the parent entity of this entity.
 /// This component should only be present on entities that actually have a parent entity.
@@ -38,7 +38,7 @@ impl Parent {
     ///
     /// [`Children`]: super::children::Children
     pub fn as_slice(&self) -> &[Entity] {
-        std::slice::from_ref(&self.0)
+        core::slice::from_ref(&self.0)
     }
 }
 

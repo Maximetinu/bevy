@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
 //! Input functionality for the [Bevy game engine](https://bevyengine.org/).

@@ -467,10 +467,10 @@ mod tests {
     use crate::{self as bevy_reflect, Struct};
     use crate::{Reflect, ReflectSerialize, TypeRegistry};
     use bevy_utils::HashMap;
+    use core::f32::consts::PI;
     use ron::extensions::Extensions;
     use ron::ser::PrettyConfig;
     use serde::Serialize;
-    use std::f32::consts::PI;
 
     #[derive(Reflect, Debug, PartialEq)]
     struct MyStruct {
@@ -907,7 +907,7 @@ mod tests {
 
         serializer.serialize(&mut ser).unwrap();
 
-        let output = std::str::from_utf8(&buf).unwrap();
+        let output = core::str::from_utf8(&buf).unwrap();
         let expected = r#"{
     "bevy_reflect::serde::ser::tests::OtherStruct": {
         "some": {

@@ -9,26 +9,38 @@ license = "MIT OR Apache-2.0"
 keywords = ["bevy"]
 
 [features]
-default = []
+default = ["std", "bevy_app/bevy_reflect"]
 serialize = ["serde", "smol_str/serde"]
+std = [
+  "bevy_a11y/std",
+  "bevy_app/std",
+  "bevy_ecs/std",
+  "bevy_math/std",
+  "bevy_reflect/std",
+  "bevy_utils/std",
+  "bevy_input/std",
+
+  "serde?/std",
+  "smol_str/std",
+]
 
 [dependencies]
 # bevy
-bevy_a11y = { path = "../bevy_a11y", version = "0.12.0" }
-bevy_app = { path = "../bevy_app", version = "0.12.0" }
-bevy_ecs = { path = "../bevy_ecs", version = "0.12.0" }
-bevy_math = { path = "../bevy_math", version = "0.12.0" }
-bevy_reflect = { path = "../bevy_reflect", version = "0.12.0", features = [
+bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0" }
+bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
+bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0" }
+bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }
+bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", features = [
   "glam",
 ] }
-bevy_utils = { path = "../bevy_utils", version = "0.12.0" }
+bevy_utils = { path = "../bevy_utils", default-features = false, version = "0.12.0" }
 # Used for close_on_esc
-bevy_input = { path = "../bevy_input", version = "0.12.0" }
+bevy_input = { path = "../bevy_input", default-features = false, version = "0.12.0" }
 
 # other
-serde = { version = "1.0", features = ["derive"], optional = true }
+serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
 raw-window-handle = "0.5"
-smol_str = "0.2"
+smol_str = { version = "0.2", default-features = false }
 
 [lints]
 workspace = true

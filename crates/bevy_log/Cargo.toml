@@ -9,8 +9,14 @@ license = "MIT OR Apache-2.0"
 keywords = ["bevy"]
 
 [features]
+default = ["std"]
 trace = ["tracing-error"]
 trace_tracy_memory = ["dep:tracy-client"]
+std = [
+  "bevy_app/std",
+  "bevy_utils/std",
+  "bevy_ecs/std",
+]
 
 [dependencies]
 bevy_app = { path = "../bevy_app", version = "0.12.0" }

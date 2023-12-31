@@ -1,3 +1,4 @@
+#![cfg_attr(not(feature = "std"), no_std)]
 mod diagnostic;
 mod entity_count_diagnostics_plugin;
 mod frame_time_diagnostics_plugin;

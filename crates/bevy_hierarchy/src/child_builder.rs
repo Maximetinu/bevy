@@ -736,7 +736,7 @@ mod tests {
         let world = &mut World::new();
         world.insert_resource(Events::<HierarchyEvent>::default());
 
-        let [a, b, c, d] = std::array::from_fn(|_| world.spawn_empty().id());
+        let [a, b, c, d] = core::array::from_fn(|_| world.spawn_empty().id());
 
         world.entity_mut(a).add_child(b);
 
@@ -771,7 +771,7 @@ mod tests {
         let world = &mut World::new();
         world.insert_resource(Events::<HierarchyEvent>::default());
 
-        let [a, b, c] = std::array::from_fn(|_| world.spawn_empty().id());
+        let [a, b, c] = core::array::from_fn(|_| world.spawn_empty().id());
 
         world.entity_mut(a).set_parent(b);
 
@@ -805,7 +805,7 @@ mod tests {
     fn set_parent_of_orphan() {
         let world = &mut World::new();
 
-        let [a, b, c] = std::array::from_fn(|_| world.spawn_empty().id());
+        let [a, b, c] = core::array::from_fn(|_| world.spawn_empty().id());
         world.entity_mut(a).set_parent(b);
         assert_parent(world, a, Some(b));
         assert_children(world, b, Some(&[a]));
@@ -822,7 +822,7 @@ mod tests {
         let world = &mut World::new();
         world.insert_resource(Events::<HierarchyEvent>::default());
 
-        let [a, b, c] = std::array::from_fn(|_| world.spawn_empty().id());
+        let [a, b, c] = core::array::from_fn(|_| world.spawn_empty().id());
 
         world.entity_mut(a).push_children(&[b, c]);
         world.entity_mut(b).remove_parent();

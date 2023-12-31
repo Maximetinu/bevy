@@ -1,5 +1,5 @@
 use crate::{Reflect, TypePath, TypePathTable};
-use std::any::{Any, TypeId};
+use core::any::{Any, TypeId};
 
 /// The named field of a reflected struct.
 #[derive(Clone, Debug)]

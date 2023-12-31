@@ -5,15 +5,15 @@ use crate::{
     ReflectDeserialize, StructInfo, StructVariantInfo, TupleInfo, TupleStructInfo,
     TupleVariantInfo, TypeInfo, TypeRegistration, TypeRegistry, UnnamedField, VariantInfo,
 };
+use core::any::TypeId;
+use core::fmt;
+use core::fmt::{Debug, Display, Formatter};
+use core::slice::Iter;
 use erased_serde::Deserializer;
 use serde::de::{
     DeserializeSeed, EnumAccess, Error, IgnoredAny, MapAccess, SeqAccess, VariantAccess, Visitor,
 };
 use serde::Deserialize;
-use std::any::TypeId;
-use std::fmt;
-use std::fmt::{Debug, Display, Formatter};
-use std::slice::Iter;
 
 pub trait DeserializeValue {
     fn deserialize(
@@ -1101,8 +1101,8 @@ fn get_registration<'a, E: Error>(
 #[cfg(test)]
 mod tests {
     use bincode::Options;
-    use std::any::TypeId;
-    use std::f32::consts::PI;
+    use core::any::TypeId;
+    use core::f32::consts::PI;
 
     use serde::de::DeserializeSeed;
     use serde::Deserialize;
@@ -1590,7 +1590,7 @@ mod tests {
             108, 101, 144, 146, 100, 145, 101,
         ];
 
-        let mut reader = std::io::BufReader::new(input.as_slice());
+        let mut reader = core::io::BufReader::new(input.as_slice());
 
         let deserializer = UntypedReflectDeserializer::new(&registry);
         let dynamic_output = deserializer

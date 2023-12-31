@@ -3,7 +3,7 @@ use crate::{
     tuple_struct_debug, Array, DynamicTypePath, Enum, List, Map, Struct, Tuple, TupleStruct,
     TypeInfo, TypePath, Typed, ValueInfo,
 };
-use std::{
+use core::{
     any::{Any, TypeId},
     fmt::Debug,
 };
@@ -90,13 +90,13 @@ pub trait Reflect: DynamicTypePath + Any + Send + Sync {
     /// [`TypeRegistry::get_type_info`]: crate::TypeRegistry::get_type_info
     fn get_represented_type_info(&self) -> Option<&'static TypeInfo>;
 
-    /// Returns the value as a [`Box<dyn Any>`][std::any::Any].
+    /// Returns the value as a [`Box<dyn Any>`][core::any::Any].
     fn into_any(self: Box<Self>) -> Box<dyn Any>;
 
-    /// Returns the value as a [`&dyn Any`][std::any::Any].
+    /// Returns the value as a [`&dyn Any`][core::any::Any].
     fn as_any(&self) -> &dyn Any;
 
-    /// Returns the value as a [`&mut dyn Any`][std::any::Any].
+    /// Returns the value as a [`&mut dyn Any`][core::any::Any].
     fn as_any_mut(&mut self) -> &mut dyn Any;
 
     /// Casts this type to a boxed reflected value.
@@ -201,7 +201,7 @@ pub trait Reflect: DynamicTypePath + Any + Send + Sync {
     /// where `type_path` is the [type path] of the underlying type.
     ///
     /// [type path]: TypePath::type_path
-    fn debug(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self.reflect_ref() {
             ReflectRef::Struct(dyn_struct) => struct_debug(dyn_struct, f),
             ReflectRef::TupleStruct(dyn_tuple_struct) => tuple_struct_debug(dyn_tuple_struct, f),
@@ -239,7 +239,7 @@ pub trait Reflect: DynamicTypePath + Any + Send + Sync {
 }
 
 impl Debug for dyn Reflect {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         self.debug(f)
     }
 }

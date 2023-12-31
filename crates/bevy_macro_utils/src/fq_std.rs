@@ -61,7 +61,11 @@ impl ToTokens for FQAny {
 
 impl ToTokens for FQBox {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        quote!(::std::boxed::Box).to_tokens(tokens);
+        if cfg!(feature = "std") {
+            quote!(::std::boxed::Box).to_tokens(tokens);
+        } else {
+            quote!(::alloc::boxed::Box).to_tokens(tokens);
+        }
     }
 }
 

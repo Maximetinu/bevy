@@ -11,15 +11,16 @@ use crate::{
 use crate::utility::{
     reflect_hasher, GenericTypeInfoCell, GenericTypePathCell, NonGenericTypeInfoCell,
 };
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, collections::VecDeque};
 use bevy_reflect_derive::impl_reflect_value;
-use std::fmt;
-use std::{
+use core::fmt;
+use core::{
     any::Any,
-    borrow::Cow,
-    collections::VecDeque,
     hash::{BuildHasher, Hash, Hasher},
-    path::Path,
 };
+#[cfg(feature = "std")]
+use std::{borrow::Cow, collections::VecDeque, path::Path};
 
 impl_reflect_value!(bool(
     Debug,
@@ -88,6 +89,7 @@ impl_reflect_value!(::alloc::string::String(
     Deserialize,
     Default
 ));
+#[cfg(feature = "std")]
 impl_reflect_value!(::std::path::PathBuf(
     Debug,
     Hash,
@@ -200,11 +202,12 @@ impl_reflect_value!(::core::num::NonZeroI8(
     Serialize,
     Deserialize
 ));
+#[cfg(feature = "std")]
 impl_reflect_value!(::std::sync::Arc<T: Send + Sync>);
 
 // `Serialize` and `Deserialize` only for platforms supported by serde:
 // https://github.com/serde-rs/serde/blob/3ffb86fc70efd3d329519e2dddfa306cc04f167c/serde/src/de/impls.rs#L1732
-#[cfg(any(unix, windows))]
+#[cfg(all(feature = "std", any(unix, windows)))]
 impl_reflect_value!(::std::ffi::OsString(
     Debug,
     Hash,
@@ -212,7 +215,7 @@ impl_reflect_value!(::std::ffi::OsString(
     Serialize,
     Deserialize
 ));
-#[cfg(not(any(unix, windows)))]
+#[cfg(all(feature = "std", not(any(unix, windows))))]
 impl_reflect_value!(::std::ffi::OsString(Debug, Hash, PartialEq));
 
 macro_rules! impl_reflect_for_veclike {
@@ -601,8 +604,11 @@ macro_rules! impl_reflect_for_hashmap {
     };
 }
 
+#[cfg(feature = "std")]
 impl_reflect_for_hashmap!(::std::collections::HashMap<K, V, S>);
+#[cfg(feature = "std")]
 impl_type_path!(::std::collections::hash_map::RandomState);
+#[cfg(feature = "std")]
 impl_type_path!(::std::collections::HashMap<K, V, S>);
 
 impl_reflect_for_hashmap!(bevy_utils::hashbrown::HashMap<K, V, S>);
@@ -1095,7 +1101,7 @@ impl Reflect for Cow<'static, str> {
 
     fn reflect_hash(&self) -> Option<u64> {
         let mut hasher = reflect_hasher();
-        Hash::hash(&std::any::Any::type_id(self), &mut hasher);
+        Hash::hash(&core::any::Any::type_id(self), &mut hasher);
         Hash::hash(self, &mut hasher);
         Some(hasher.finish())
     }
@@ -1103,7 +1109,7 @@ impl Reflect for Cow<'static, str> {
     fn reflect_partial_eq(&self, value: &dyn Reflect) -> Option<bool> {
         let value = value.as_any();
         if let Some(value) = value.downcast_ref::<Self>() {
-            Some(std::cmp::PartialEq::eq(self, value))
+            Some(core::cmp::PartialEq::eq(self, value))
         } else {
             Some(false)
         }
@@ -1302,6 +1308,7 @@ impl<T: FromReflect + Clone + TypePath> FromReflect for Cow<'static, [T]> {
     }
 }
 
+#[cfg(feature = "std")]
 impl Reflect for &'static Path {
     fn get_represented_type_info(&self) -> Option<&'static TypeInfo> {
         Some(<Self as Typed>::type_info())
@@ -1363,7 +1370,7 @@ impl Reflect for &'static Path {
 
     fn reflect_hash(&self) -> Option<u64> {
         let mut hasher = reflect_hasher();
-        Hash::hash(&std::any::Any::type_id(self), &mut hasher);
+        Hash::hash(&core::any::Any::type_id(self), &mut hasher);
         Hash::hash(self, &mut hasher);
         Some(hasher.finish())
     }
@@ -1371,13 +1378,14 @@ impl Reflect for &'static Path {
     fn reflect_partial_eq(&self, value: &dyn Reflect) -> Option<bool> {
         let value = value.as_any();
         if let Some(value) = value.downcast_ref::<Self>() {
-            Some(std::cmp::PartialEq::eq(self, value))
+            Some(core::cmp::PartialEq::eq(self, value))
         } else {
             Some(false)
         }
     }
 }
 
+#[cfg(feature = "std")]
 impl Typed for &'static Path {
     fn type_info() -> &'static TypeInfo {
         static CELL: NonGenericTypeInfoCell = NonGenericTypeInfoCell::new();
@@ -1385,6 +1393,7 @@ impl Typed for &'static Path {
     }
 }
 
+#[cfg(feature = "std")]
 impl GetTypeRegistration for &'static Path {
     fn get_type_registration() -> TypeRegistration {
         let mut registration = TypeRegistration::of::<Self>();
@@ -1393,12 +1402,14 @@ impl GetTypeRegistration for &'static Path {
     }
 }
 
+#[cfg(feature = "std")]
 impl FromReflect for &'static Path {
     fn from_reflect(reflect: &dyn crate::Reflect) -> Option<Self> {
         reflect.as_any().downcast_ref::<Self>().copied()
     }
 }
 
+#[cfg(feature = "std")]
 impl Reflect for Cow<'static, Path> {
     fn get_represented_type_info(&self) -> Option<&'static TypeInfo> {
         Some(<Self as Typed>::type_info())
@@ -1460,7 +1471,7 @@ impl Reflect for Cow<'static, Path> {
 
     fn reflect_hash(&self) -> Option<u64> {
         let mut hasher = reflect_hasher();
-        Hash::hash(&std::any::Any::type_id(self), &mut hasher);
+        Hash::hash(&core::any::Any::type_id(self), &mut hasher);
         Hash::hash(self, &mut hasher);
         Some(hasher.finish())
     }
@@ -1468,7 +1479,7 @@ impl Reflect for Cow<'static, Path> {
     fn reflect_partial_eq(&self, value: &dyn Reflect) -> Option<bool> {
         let value = value.as_any();
         if let Some(value) = value.downcast_ref::<Self>() {
-            Some(std::cmp::PartialEq::eq(self, value))
+            Some(core::cmp::PartialEq::eq(self, value))
         } else {
             Some(false)
         }
@@ -1479,6 +1490,7 @@ impl Reflect for Cow<'static, Path> {
     }
 }
 
+#[cfg(feature = "std")]
 impl Typed for Cow<'static, Path> {
     fn type_info() -> &'static TypeInfo {
         static CELL: NonGenericTypeInfoCell = NonGenericTypeInfoCell::new();
@@ -1486,15 +1498,18 @@ impl Typed for Cow<'static, Path> {
     }
 }
 
+#[cfg(feature = "std")]
 impl_type_path!(::std::path::Path);
 impl_type_path!(::alloc::borrow::Cow<'a: 'static, T: ToOwned + ?Sized>);
 
+#[cfg(feature = "std")]
 impl FromReflect for Cow<'static, Path> {
     fn from_reflect(reflect: &dyn Reflect) -> Option<Self> {
         Some(reflect.as_any().downcast_ref::<Self>()?.clone())
     }
 }
 
+#[cfg(feature = "std")]
 impl GetTypeRegistration for Cow<'static, Path> {
     fn get_type_registration() -> TypeRegistration {
         let mut registration = TypeRegistration::of::<Self>();
@@ -1515,7 +1530,7 @@ mod tests {
     };
     use bevy_utils::HashMap;
     use bevy_utils::{Duration, Instant};
-    use std::f32::consts::{PI, TAU};
+    use core::f32::consts::{PI, TAU};
     use std::path::Path;
 
     #[test]
@@ -1524,7 +1539,7 @@ mod tests {
         type_registry.register::<Duration>();
 
         let reflect_serialize = type_registry
-            .get_type_data::<ReflectSerialize>(std::any::TypeId::of::<Duration>())
+            .get_type_data::<ReflectSerialize>(core::any::TypeId::of::<Duration>())
             .unwrap();
         let _serializable = reflect_serialize.get_serializable(&Duration::ZERO);
     }
@@ -1703,11 +1718,11 @@ mod tests {
     }
     #[test]
     fn nonzero_usize_impl_reflect_from_reflect() {
-        let a: &dyn Reflect = &std::num::NonZeroUsize::new(42).unwrap();
-        let b: &dyn Reflect = &std::num::NonZeroUsize::new(42).unwrap();
+        let a: &dyn Reflect = &core::num::NonZeroUsize::new(42).unwrap();
+        let b: &dyn Reflect = &core::num::NonZeroUsize::new(42).unwrap();
         assert!(a.reflect_partial_eq(b).unwrap_or_default());
-        let forty_two: std::num::NonZeroUsize = crate::FromReflect::from_reflect(a).unwrap();
-        assert_eq!(forty_two, std::num::NonZeroUsize::new(42).unwrap());
+        let forty_two: core::num::NonZeroUsize = crate::FromReflect::from_reflect(a).unwrap();
+        assert_eq!(forty_two, core::num::NonZeroUsize::new(42).unwrap());
     }
 
     #[test]

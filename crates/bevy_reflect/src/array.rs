@@ -3,7 +3,7 @@ use crate::{
     TypeInfo, TypePath, TypePathTable,
 };
 use bevy_reflect_derive::impl_type_path;
-use std::{
+use core::{
     any::{Any, TypeId},
     fmt::{Debug, Formatter},
     hash::{Hash, Hasher},
@@ -297,7 +297,7 @@ impl Reflect for DynamicArray {
         array_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "DynamicArray(")?;
         array_debug(self, f)?;
         write!(f, ")")
@@ -455,7 +455,7 @@ pub fn array_partial_eq<A: Array>(array: &A, reflect: &dyn Reflect) -> Option<bo
 /// // ]
 /// ```
 #[inline]
-pub fn array_debug(dyn_array: &dyn Array, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+pub fn array_debug(dyn_array: &dyn Array, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
     let mut debug = f.debug_list();
     for item in dyn_array.iter() {
         debug.entry(&item as &dyn Debug);

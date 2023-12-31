@@ -10,25 +10,37 @@ keywords = ["bevy"]
 
 [dependencies]
 # bevy
-bevy_app = { path = "../bevy_app", version = "0.12.0" }
-bevy_ecs = { path = "../bevy_ecs", version = "0.12.0", features = [
+bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
+bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0", features = [
   "bevy_reflect",
 ] }
-bevy_hierarchy = { path = "../bevy_hierarchy", version = "0.12.0" }
-bevy_math = { path = "../bevy_math", version = "0.12.0" }
-bevy_reflect = { path = "../bevy_reflect", version = "0.12.0", features = [
+bevy_hierarchy = { path = "../bevy_hierarchy", default-features = false, version = "0.12.0" }
+bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }
+bevy_reflect = { path = "../bevy_reflect", default-features = false, optional = true, version = "0.12.0", features = [
   "bevy",
 ] }
-serde = { version = "1", features = ["derive"], optional = true }
-thiserror = "1.0"
+serde = { version = "1", default-features = false, features = ["derive"], optional = true }
+thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 
 [dev-dependencies]
 bevy_tasks = { path = "../bevy_tasks", version = "0.12.0" }
 approx = "0.5.1"
-glam = { version = "0.24", features = ["approx"] }
+glam = { version = "0.24", default-features = false, features = ["approx"] }
 
 [features]
+default = ["std", "bevy_reflect"]
 serialize = ["dep:serde", "bevy_math/serialize"]
+std = [
+  "bevy_app/std",
+  "bevy_ecs/std",
+  "bevy_hierarchy/std",
+  "bevy_math/std",
+  "bevy_reflect/std",
+
+  "thiserror/std",
+  "serde/std"
+]
+bevy_reflect = ["dep:bevy_reflect", "bevy_app/bevy_reflect"]
 
 [lints]
 workspace = true

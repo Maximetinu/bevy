@@ -3,6 +3,7 @@
 //! [Bevy]: https://bevyengine.org/
 //!
 
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
 #[allow(missing_docs)]

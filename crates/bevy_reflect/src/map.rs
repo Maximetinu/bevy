@@ -1,6 +1,6 @@
-use std::any::{Any, TypeId};
-use std::fmt::{Debug, Formatter};
-use std::hash::Hash;
+use core::any::{Any, TypeId};
+use core::fmt::{Debug, Formatter};
+use core::hash::Hash;
 
 use bevy_reflect_derive::impl_type_path;
 use bevy_utils::{Entry, HashMap};
@@ -292,7 +292,7 @@ impl Map for DynamicMap {
         match self.indices.entry(key.reflect_hash().expect(HASH_ERROR)) {
             Entry::Occupied(entry) => {
                 let (_old_key, old_value) = self.values.get_mut(*entry.get()).unwrap();
-                std::mem::swap(old_value, &mut value);
+                core::mem::swap(old_value, &mut value);
                 Some(value)
             }
             Entry::Vacant(entry) => {
@@ -374,7 +374,7 @@ impl Reflect for DynamicMap {
         map_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "DynamicMap(")?;
         map_debug(self, f)?;
         write!(f, ")")
@@ -389,7 +389,7 @@ impl Reflect for DynamicMap {
 impl_type_path!((in bevy_reflect) DynamicMap);
 
 impl Debug for DynamicMap {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         self.debug(f)
     }
 }
@@ -425,7 +425,10 @@ impl<'a> Iterator for MapIter<'a> {
 
 impl IntoIterator for DynamicMap {
     type Item = (Box<dyn Reflect>, Box<dyn Reflect>);
+    #[cfg(feature = "std")]
     type IntoIter = std::vec::IntoIter<Self::Item>;
+    #[cfg(not(feature = "std"))]
+    type IntoIter = alloc::vec::IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.values.into_iter()
@@ -485,7 +488,7 @@ pub fn map_partial_eq<M: Map>(a: &M, b: &dyn Reflect) -> Option<bool> {
 /// // }
 /// ```
 #[inline]
-pub fn map_debug(dyn_map: &dyn Map, f: &mut Formatter<'_>) -> std::fmt::Result {
+pub fn map_debug(dyn_map: &dyn Map, f: &mut Formatter<'_>) -> core::fmt::Result {
     let mut debug = f.debug_map();
     for (key, value) in dyn_map.iter() {
         debug.entry(&key as &dyn Debug, &value as &dyn Debug);

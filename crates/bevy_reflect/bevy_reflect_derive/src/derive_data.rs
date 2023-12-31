@@ -761,9 +761,15 @@ impl<'a> ReflectTypePath<'a> {
                 let ident = &const_param.ident;
                 let ty = &const_param.ty;
 
-                Some(StringExpr::Owned(quote! {
-                    <#ty as ::std::string::ToString>::to_string(&#ident)
-                }))
+                if cfg!(feature = "std") {
+                    Some(StringExpr::Owned(quote! {
+                        <#ty as ::std::string::ToString>::to_string(&#ident)
+                    }))
+                } else {
+                    Some(StringExpr::Owned(quote! {
+                        <#ty as ::alloc::string::ToString>::to_string(&#ident)
+                    }))
+                }
             }
             GenericParam::Lifetime(_) => None,
         });

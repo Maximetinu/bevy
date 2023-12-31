@@ -7,9 +7,9 @@ use crate::{
     ReflectMut, ReflectOwned, ReflectRef, TypeInfo, TypePath, TypeRegistration, Typed,
     UnnamedField,
 };
-use std::any::{Any, TypeId};
-use std::fmt::{Debug, Formatter};
-use std::slice::Iter;
+use core::any::{Any, TypeId};
+use core::fmt::{Debug, Formatter};
+use core::slice::Iter;
 
 /// A trait used to power [tuple-like] operations via [reflection].
 ///
@@ -368,7 +368,7 @@ impl Reflect for DynamicTuple {
         tuple_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "DynamicTuple(")?;
         tuple_debug(self, f)?;
         write!(f, ")")
@@ -446,7 +446,7 @@ pub fn tuple_partial_eq<T: Tuple>(a: &T, b: &dyn Reflect) -> Option<bool> {
 /// // )
 /// ```
 #[inline]
-pub fn tuple_debug(dyn_tuple: &dyn Tuple, f: &mut Formatter<'_>) -> std::fmt::Result {
+pub fn tuple_debug(dyn_tuple: &dyn Tuple, f: &mut Formatter<'_>) -> core::fmt::Result {
     let mut debug = f.debug_tuple("");
     for field in dyn_tuple.iter_fields() {
         debug.field(&field as &dyn Debug);

@@ -9,10 +9,12 @@ license = "MIT OR Apache-2.0"
 keywords = ["bevy"]
 
 [dependencies]
-glam = { version = "0.24.1", features = ["bytemuck"] }
-serde = { version = "1", features = ["derive"], optional = true }
+glam = { version = "0.24.1", default-features = false, features = ["bytemuck"] }
+serde = { version = "1", default-features = false, features = ["derive"], optional = true }
 
 [features]
+default = ["std"]
+std = ["glam/std", "serde?/std"]
 serialize = ["dep:serde", "glam/serde"]
 # Enable interoperation of glam types with mint-compatible libraries
 mint = ["glam/mint"]

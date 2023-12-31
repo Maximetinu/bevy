@@ -9,22 +9,32 @@ license = "MIT OR Apache-2.0"
 keywords = ["bevy"]
 
 [features]
-default = []
+default = ["std"]
 serialize = ["serde"]
+std = [
+  "bevy_app/std",
+  "bevy_ecs/std",
+  "bevy_math/std",
+  "bevy_utils/std",
+  "bevy_reflect/std",
+
+  "serde/std",
+  "thiserror/std",
+]
 
 [dependencies]
 # bevy
-bevy_app = { path = "../bevy_app", version = "0.12.0" }
-bevy_ecs = { path = "../bevy_ecs", version = "0.12.0" }
-bevy_math = { path = "../bevy_math", version = "0.12.0" }
-bevy_utils = { path = "../bevy_utils", version = "0.12.0" }
-bevy_reflect = { path = "../bevy_reflect", version = "0.12.0", features = [
+bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
+bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0" }
+bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }
+bevy_utils = { path = "../bevy_utils", default-features = false, version = "0.12.0" }
+bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", features = [
   "glam",
 ] }
 
 # other
-serde = { version = "1", features = ["derive"], optional = true }
-thiserror = "1.0"
+serde = { version = "1", default-features = false, features = ["derive"], optional = true }
+thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 
 [dev-dependencies]
 bevy = { path = "../../", version = "0.12.0" }

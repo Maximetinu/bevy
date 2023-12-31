@@ -7,8 +7,8 @@ use bevy_ecs::{
     world::World,
 };
 use bevy_utils::smallvec::SmallVec;
+use core::ops::Deref;
 use core::slice;
-use std::ops::Deref;
 
 /// Contains references to the child entities of this entity.
 ///
@@ -67,7 +67,7 @@ impl Children {
     /// See also [`sort_by_key`](Children::sort_by_key), [`sort_by_cached_key`](Children::sort_by_cached_key).
     pub fn sort_by<F>(&mut self, compare: F)
     where
-        F: FnMut(&Entity, &Entity) -> std::cmp::Ordering,
+        F: FnMut(&Entity, &Entity) -> core::cmp::Ordering,
     {
         self.0.sort_by(compare);
     }
@@ -113,7 +113,7 @@ impl Children {
     /// See also [`sort_unstable_by_key`](Children::sort_unstable_by_key).
     pub fn sort_unstable_by<F>(&mut self, compare: F)
     where
-        F: FnMut(&Entity, &Entity) -> std::cmp::Ordering,
+        F: FnMut(&Entity, &Entity) -> core::cmp::Ordering,
     {
         self.0.sort_unstable_by(compare);
     }

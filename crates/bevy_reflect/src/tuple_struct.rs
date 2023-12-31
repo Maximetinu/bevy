@@ -4,9 +4,9 @@ use crate::{
     self as bevy_reflect, DynamicTuple, Reflect, ReflectMut, ReflectOwned, ReflectRef, Tuple,
     TypeInfo, TypePath, TypePathTable, UnnamedField,
 };
-use std::any::{Any, TypeId};
-use std::fmt::{Debug, Formatter};
-use std::slice::Iter;
+use core::any::{Any, TypeId};
+use core::fmt::{Debug, Formatter};
+use core::slice::Iter;
 
 /// A trait used to power [tuple struct-like] operations via [reflection].
 ///
@@ -370,7 +370,7 @@ impl Reflect for DynamicTupleStruct {
         tuple_struct_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         write!(f, "DynamicTupleStruct(")?;
         tuple_struct_debug(self, f)?;
         write!(f, ")")
@@ -385,7 +385,7 @@ impl Reflect for DynamicTupleStruct {
 impl_type_path!((in bevy_reflect) DynamicTupleStruct);
 
 impl Debug for DynamicTupleStruct {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
         self.debug(f)
     }
 }
@@ -452,7 +452,7 @@ pub fn tuple_struct_partial_eq<S: TupleStruct>(a: &S, b: &dyn Reflect) -> Option
 pub fn tuple_struct_debug(
     dyn_tuple_struct: &dyn TupleStruct,
     f: &mut Formatter<'_>,
-) -> std::fmt::Result {
+) -> core::fmt::Result {
     let mut debug = f.debug_tuple(
         dyn_tuple_struct
             .get_represented_type_info()

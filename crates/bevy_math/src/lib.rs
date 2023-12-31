@@ -4,6 +4,7 @@
 //! matrices like [`Mat2`], [`Mat3`] and [`Mat4`] and orientation representations
 //! like [`Quat`].
 
+#![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
 mod affine3;

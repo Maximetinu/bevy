@@ -1,12 +1,15 @@
 //! Helpers for working with Bevy reflection.
 
 use crate::TypeInfo;
+#[cfg(not(feature = "std"))]
+use alloc::sync::{OnceLock, PoisonError, RwLock};
 use bevy_utils::{FixedState, StableHashMap};
-use std::{
+use core::{
     any::{Any, TypeId},
     hash::BuildHasher,
-    sync::{OnceLock, PoisonError, RwLock},
 };
+#[cfg(feature = "std")]
+use std::sync::{OnceLock, PoisonError, RwLock};
 
 /// A type that can be stored in a ([`Non`])[`GenericTypeCell`].
 ///
@@ -48,7 +51,7 @@ mod sealed {
 /// ## Example
 ///
 /// ```
-/// # use std::any::Any;
+/// # use core::any::Any;
 /// # use bevy_reflect::{DynamicTypePath, NamedField, Reflect, ReflectMut, ReflectOwned, ReflectRef, StructInfo, Typed, TypeInfo, TypePath};
 /// use bevy_reflect::utility::NonGenericTypeInfoCell;
 ///
@@ -123,7 +126,7 @@ impl<T: TypedProperty> NonGenericTypeCell<T> {
 /// Implementing [`TypeInfo`] with generics.
 ///
 /// ```
-/// # use std::any::Any;
+/// # use core::any::Any;
 /// # use bevy_reflect::{DynamicTypePath, Reflect, ReflectMut, ReflectOwned, ReflectRef, TupleStructInfo, Typed, TypeInfo, TypePath, UnnamedField};
 /// use bevy_reflect::utility::GenericTypeInfoCell;
 ///
@@ -163,7 +166,7 @@ impl<T: TypedProperty> NonGenericTypeCell<T> {
 ///  Implementing [`TypePath`] with generics.
 ///
 /// ```
-/// # use std::any::Any;
+/// # use core::any::Any;
 /// # use bevy_reflect::TypePath;
 /// use bevy_reflect::utility::GenericTypePathCell;
 ///

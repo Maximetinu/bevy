@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use alloc::collections::VecDeque;
+#[cfg(feature = "std")]
 use std::collections::VecDeque;
 
 use bevy_ecs::{
@@ -170,7 +173,7 @@ mod tests {
     fn descendant_iter() {
         let world = &mut World::new();
 
-        let [a, b, c, d] = std::array::from_fn(|i| world.spawn(A(i)).id());
+        let [a, b, c, d] = core::array::from_fn(|i| world.spawn(A(i)).id());
 
         world.entity_mut(a).push_children(&[b, c]);
         world.entity_mut(c).push_children(&[d]);
@@ -189,7 +192,7 @@ mod tests {
     fn ancestor_iter() {
         let world = &mut World::new();
 
-        let [a, b, c] = std::array::from_fn(|i| world.spawn(A(i)).id());
+        let [a, b, c] = core::array::from_fn(|i| world.spawn(A(i)).id());
 
         world.entity_mut(a).push_children(&[b]);
         world.entity_mut(b).push_children(&[c]);

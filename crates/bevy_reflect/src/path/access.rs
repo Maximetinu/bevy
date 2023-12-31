@@ -1,4 +1,8 @@
-use std::{borrow::Cow, fmt};
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Cow;
+use core::fmt;
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 use super::{AccessError, ReflectPathError};
 use crate::{Reflect, ReflectMut, ReflectRef, VariantType};

@@ -1,4 +1,5 @@
 mod command_queue;
+#[cfg(feature = "std")]
 mod parallel_scope;
 
 use crate::{
@@ -11,6 +12,7 @@ use crate::{
 use bevy_ecs_macros::SystemParam;
 use bevy_utils::tracing::{error, info};
 pub use command_queue::CommandQueue;
+#[cfg(feature = "std")]
 pub use parallel_scope::*;
 use std::marker::PhantomData;
 

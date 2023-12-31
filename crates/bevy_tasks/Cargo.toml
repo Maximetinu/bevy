@@ -10,6 +10,7 @@ keywords = ["bevy"]
 
 [features]
 multi-threaded = []
+std = []
 
 [dependencies]
 futures-lite = "2.0.1"
