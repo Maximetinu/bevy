@@ -2,8 +2,8 @@ use crate::{
     ArrayInfo, EnumInfo, ListInfo, MapInfo, Reflect, StructInfo, TupleInfo, TupleStructInfo,
     TypePath, TypePathTable,
 };
-use core::any::{Any, TypeId};
-use core::fmt::Debug;
+use std::any::{Any, TypeId};
+use std::fmt::Debug;
 
 /// A static accessor to compile-time type information.
 ///
@@ -24,7 +24,7 @@ use core::fmt::Debug;
 /// # Example
 ///
 /// ```
-/// # use core::any::Any;
+/// # use std::any::Any;
 /// # use bevy_reflect::{DynamicTypePath, NamedField, Reflect, ReflectMut, ReflectOwned, ReflectRef, StructInfo, TypeInfo, TypePath, ValueInfo};
 /// # use bevy_reflect::utility::NonGenericTypeInfoCell;
 /// use bevy_reflect::Typed;

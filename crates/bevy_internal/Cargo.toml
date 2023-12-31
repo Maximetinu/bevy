@@ -155,7 +155,6 @@ std = [
   "bevy_input/std",
   "bevy_log/std",
   "bevy_math/std",
-  "bevy_reflect/std",
   "bevy_time/std",
   "bevy_transform/std",
   "bevy_window/std",
@@ -176,9 +175,6 @@ bevy_input = { path = "../bevy_input", default-features = false, version = "0.12
 bevy_log = { path = "../bevy_log", default-features = false, version = "0.12.0" }
 bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }
 bevy_ptr = { path = "../bevy_ptr", version = "0.12.0" }
-bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", features = [
-  "bevy",
-] }
 bevy_time = { path = "../bevy_time", default-features = false, version = "0.12.0" }
 bevy_transform = { path = "../bevy_transform", default-features = false, version = "0.12.0" }
 bevy_window = { path = "../bevy_window", default-features = false, version = "0.12.0" }
@@ -192,6 +188,9 @@ bevy_core_pipeline = { path = "../bevy_core_pipeline", optional = true, version 
 bevy_gltf = { path = "../bevy_gltf", optional = true, version = "0.12.0" }
 bevy_pbr = { path = "../bevy_pbr", optional = true, version = "0.12.0" }
 bevy_render = { path = "../bevy_render", optional = true, version = "0.12.0" }
+bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", features = [
+  "bevy",
+], optional = true }
 bevy_dynamic_plugin = { path = "../bevy_dynamic_plugin", optional = true, version = "0.12.0" }
 bevy_scene = { path = "../bevy_scene", optional = true, version = "0.12.0" }
 bevy_sprite = { path = "../bevy_sprite", optional = true, version = "0.12.0" }

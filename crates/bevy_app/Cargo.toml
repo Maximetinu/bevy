@@ -16,7 +16,6 @@ bevy_reflect = ["dep:bevy_reflect", "bevy_ecs/bevy_reflect"]
 std = [
   "bevy_ecs/std",
   "bevy_utils/std",
-  "bevy_reflect?/std",
   "bevy_tasks/std",
 
   "serde/std",

@@ -1,4 +1,4 @@
-use core::{fmt, num::ParseIntError, str::from_utf8_unchecked};
+use std::{fmt, num::ParseIntError, str::from_utf8_unchecked};
 
 use thiserror::Error;
 

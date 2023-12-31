@@ -16,6 +16,7 @@ std = [
   "tracing/std",
   "thiserror/std",
   "uuid/std",
+  "petgraph/std",
 ]
 
 [dependencies]
@@ -25,7 +26,7 @@ web-time = { version = "0.2" }
 uuid = { version = "1.1", default-features = false, features = ["v4", "serde"] }
 hashbrown = { version = "0.14", features = [] }
 bevy_utils_proc_macros = { version = "0.12.0", path = "macros" }
-petgraph = "0.6"
+petgraph = { path = "../../../petgraph", default-features = false, features = ["no_std", "graphs"] }
 thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 nonmax = "0.5"
 smallvec = { version = "1.11", features = ["union", "const_generics"] }

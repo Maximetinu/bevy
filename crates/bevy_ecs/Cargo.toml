@@ -14,7 +14,6 @@ trace = []
 multi-threaded = ["bevy_tasks/multi-threaded"]
 default = ["std", "bevy_reflect"]
 std = [
-  "bevy_reflect?/std",
   "bevy_tasks/std",
   "bevy_utils/std",
 

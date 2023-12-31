@@ -339,17 +339,9 @@ impl StringExpr {
     /// [already owned]: StringExpr::Owned
     pub fn into_owned(self) -> proc_macro2::TokenStream {
         match self {
-            Self::Const(tokens) | Self::Borrowed(tokens) => {
-                if cfg!(feature = "std") {
-                    quote! {
-                        ::std::string::ToString::to_string(#tokens)
-                    }
-                } else {
-                    quote! {
-                        ::alloc::string::ToString::to_string(#tokens)
-                    }
-                }
-            }
+            Self::Const(tokens) | Self::Borrowed(tokens) => quote! {
+                ::std::string::ToString::to_string(#tokens)
+            },
             Self::Owned(owned) => owned,
         }
     }

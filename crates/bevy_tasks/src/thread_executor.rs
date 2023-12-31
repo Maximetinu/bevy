@@ -1,4 +1,4 @@
-use std::{
+use core::{
     marker::PhantomData,
     thread::{self, ThreadId},
 };
@@ -11,7 +11,7 @@ use futures_lite::Future;
 ///
 /// # Example
 /// ```rust
-/// # use std::sync::{Arc, atomic::{AtomicI32, Ordering}};
+/// # use core::sync::{Arc, atomic::{AtomicI32, Ordering}};
 /// use bevy_tasks::ThreadExecutor;
 ///
 /// let thread_executor = ThreadExecutor::new();
@@ -20,7 +20,7 @@ use futures_lite::Future;
 /// // create some owned values that can be moved into another thread
 /// let count_clone = count.clone();
 ///
-/// std::thread::scope(|scope| {
+/// core::thread::scope(|scope| {
 ///     scope.spawn(|| {
 ///         // we cannot get the ticker from another thread
 ///         let not_thread_ticker = thread_executor.ticker();
@@ -86,7 +86,7 @@ impl<'task> ThreadExecutor<'task> {
 
     /// Returns true if `self` and `other`'s executor is same
     pub fn is_same(&self, other: &Self) -> bool {
-        std::ptr::eq(self, other)
+        core::ptr::eq(self, other)
     }
 }
 
@@ -115,7 +115,7 @@ impl<'task, 'ticker> ThreadExecutorTicker<'task, 'ticker> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::sync::Arc;
+    use core::sync::Arc;
 
     #[test]
     fn test_ticker() {

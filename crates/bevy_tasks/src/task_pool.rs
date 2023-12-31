@@ -1,4 +1,4 @@
-use std::{
+use core::{
     future::Future,
     marker::PhantomData,
     mem,
@@ -171,7 +171,7 @@ impl TaskPool {
                             }
                             let _destructor = CallOnDrop(on_thread_destroy);
                             loop {
-                                let res = std::panic::catch_unwind(|| {
+                                let res = core::panic::catch_unwind(|| {
                                     let tick_forever = async move {
                                         loop {
                                             local_executor.tick().await;
@@ -262,7 +262,7 @@ impl TaskPool {
     ///     let pool = TaskPool::new();
     ///     let foo = Box::new(42);
     ///     pool.scope(|scope| {
-    ///         std::thread::spawn(move || {
+    ///         core::thread::spawn(move || {
     ///             // UB. This could spawn on the scope after `.scope` returns and the internal Scope is dropped.
     ///             scope.spawn(async move {
     ///                 assert_eq!(*foo, 42);
@@ -364,7 +364,7 @@ impl TaskPool {
         // shadow the variable so that the owned value cannot be used for the rest of the function
         // SAFETY: As above, all futures must complete in this function so we can change the lifetime
         let spawned: &'env ConcurrentQueue<
-            FallibleTask<Result<T, Box<(dyn std::any::Any + Send)>>>,
+            FallibleTask<Result<T, Box<(dyn core::any::Any + Send)>>>,
         > = unsafe { mem::transmute(&spawned) };
 
         let scope = Scope {
@@ -392,7 +392,7 @@ impl TaskPool {
                         if let Some(res) = task.await {
                             match res {
                                 Ok(res) => results.push(res),
-                                Err(payload) => std::panic::resume_unwind(payload),
+                                Err(payload) => core::panic::resume_unwind(payload),
                             }
                         } else {
                             panic!("Failed to catch panic!");
@@ -603,7 +603,7 @@ pub struct Scope<'scope, 'env: 'scope, T> {
     executor: &'scope async_executor::Executor<'scope>,
     external_executor: &'scope ThreadExecutor<'scope>,
     scope_executor: &'scope ThreadExecutor<'scope>,
-    spawned: &'scope ConcurrentQueue<FallibleTask<Result<T, Box<(dyn std::any::Any + Send)>>>>,
+    spawned: &'scope ConcurrentQueue<FallibleTask<Result<T, Box<(dyn core::any::Any + Send)>>>>,
     // make `Scope` invariant over 'scope and 'env
     scope: PhantomData<&'scope mut &'scope ()>,
     env: PhantomData<&'env mut &'env ()>,
@@ -679,7 +679,7 @@ where
 #[allow(clippy::disallowed_types)]
 mod tests {
     use super::*;
-    use std::sync::{
+    use core::sync::{
         atomic::{AtomicBool, AtomicI32, Ordering},
         Barrier,
     };

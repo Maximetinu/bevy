@@ -6,17 +6,16 @@ use bevy_utils::{all_tuples, Duration, HashMap, HashSet, Instant, Uuid};
 #[cfg(feature = "smallvec")]
 use bevy_utils::{smallvec, smallvec::SmallVec};
 
-use core::{
+#[cfg(any(unix, windows))]
+use std::ffi::OsString;
+use std::{
     num::{
         NonZeroI128, NonZeroI16, NonZeroI32, NonZeroI64, NonZeroI8, NonZeroIsize, NonZeroU128,
         NonZeroU16, NonZeroU32, NonZeroU64, NonZeroU8, NonZeroUsize,
     },
     ops::{RangeFrom, RangeFull, RangeInclusive, RangeTo, RangeToInclusive},
+    path::PathBuf,
 };
-#[cfg(all(feature = "std", any(unix, windows)))]
-use std::ffi::OsString;
-#[cfg(feature = "std")]
-use std::path::PathBuf;
 impl<T: TypeUuid, const N: usize> TypeUuid for [T; N] {
     const TYPE_UUID: Uuid = generate_composite_uuid(
         Uuid::from_u128(0x18d33c78e63c47b9bbf8f095008ab693),
@@ -41,7 +40,6 @@ impl_type_uuid!(f32, "006607124a8148e1910c86f0c18c9015");
 impl_type_uuid!(f64, "a5bc32f5632b478c92a0939b821fff80");
 impl_type_uuid!(Result<T, E>, "d5960af2e8a743dfb7427dd59b70df95");
 impl_type_uuid!(String, "c9f90d31b52d4bcd8b5c1d8b6fc1bcba");
-#[cfg(feature = "std")]
 impl_type_uuid!(PathBuf, "aa79933abd1743698583a3acad3b8989");
 impl_type_uuid!(Vec<T>, "ab98f5408b974475b643662247fb3886");
 impl_type_uuid!(HashMap<K, V>,"f37bfad9ca8c4f6ea7448f1c39e05f98");

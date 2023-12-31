@@ -2,7 +2,7 @@ use bevy_reflect_derive::impl_type_path;
 use bevy_utils::smallvec;
 use smallvec::SmallVec;
 
-use core::any::Any;
+use std::any::Any;
 
 use crate::utility::GenericTypeInfoCell;
 use crate::{

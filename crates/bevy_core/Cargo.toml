@@ -11,12 +11,8 @@ keywords = ["bevy"]
 
 [dependencies]
 # bevy
-bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0", features = [
-  "bevy_reflect",
-] }
-bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0", features = [
-  "bevy_reflect",
-] }
+bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
+bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0" }
 bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }
 bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", features = [
   "bevy",
@@ -30,16 +26,15 @@ serde = { version = "1.0", default-features = false, optional = true }
 
 [features]
 serialize = ["dep:serde"]
-bevy_reflect = ["dep:bevy_reflect"]
+bevy_reflect = ["dep:bevy_reflect", "bevy_ecs/bevy_reflect", "bevy_app/bevy_reflect"]
 default = ["std", "bevy_reflect"]
 std = [
   "bevy_app/std",
   "bevy_ecs/std",
   "bevy_math/std",
-  "bevy_reflect?/std",
   "bevy_tasks/std",
   "bevy_utils/std",
-  
+
   "serde?/std",
 ]
 

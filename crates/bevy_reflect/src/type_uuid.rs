@@ -23,9 +23,9 @@ where
 
     /// Returns the [type name] of this value's type.
     ///
-    /// [type name]: core::any::type_name
+    /// [type name]: std::any::type_name
     fn type_name(&self) -> &'static str {
-        core::any::type_name::<Self>()
+        std::any::type_name::<Self>()
     }
 }
 
@@ -34,7 +34,7 @@ mod test {
     use super::*;
     use crate as bevy_reflect;
     use bevy_reflect_derive::TypeUuid;
-    use core::marker::PhantomData;
+    use std::marker::PhantomData;
 
     #[derive(TypeUuid)]
     #[uuid = "af6466c2-a9f4-11eb-bcbc-0242ac130002"]

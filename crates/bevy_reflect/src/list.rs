@@ -1,6 +1,6 @@
-use core::any::{Any, TypeId};
-use core::fmt::{Debug, Formatter};
-use core::hash::{Hash, Hasher};
+use std::any::{Any, TypeId};
+use std::fmt::{Debug, Formatter};
+use std::hash::{Hash, Hasher};
 
 use bevy_reflect_derive::impl_type_path;
 
@@ -347,7 +347,7 @@ impl Reflect for DynamicList {
         list_partial_eq(self, value)
     }
 
-    fn debug(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+    fn debug(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "DynamicList(")?;
         list_debug(self, f)?;
         write!(f, ")")
@@ -362,17 +362,14 @@ impl Reflect for DynamicList {
 impl_type_path!((in bevy_reflect) DynamicList);
 
 impl Debug for DynamicList {
-    fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         self.debug(f)
     }
 }
 
 impl IntoIterator for DynamicList {
     type Item = Box<dyn Reflect>;
-    #[cfg(feature = "std")]
     type IntoIter = std::vec::IntoIter<Self::Item>;
-    #[cfg(not(feature = "std"))]
-    type IntoIter = alloc::vec::IntoIter<Self::Item>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.values.into_iter()
@@ -495,7 +492,7 @@ pub fn list_partial_eq<L: List>(a: &L, b: &dyn Reflect) -> Option<bool> {
 /// // ]
 /// ```
 #[inline]
-pub fn list_debug(dyn_list: &dyn List, f: &mut Formatter<'_>) -> core::fmt::Result {
+pub fn list_debug(dyn_list: &dyn List, f: &mut Formatter<'_>) -> std::fmt::Result {
     let mut debug = f.debug_list();
     for item in dyn_list.iter() {
         debug.entry(&item as &dyn Debug);
@@ -506,7 +503,7 @@ pub fn list_debug(dyn_list: &dyn List, f: &mut Formatter<'_>) -> core::fmt::Resu
 #[cfg(test)]
 mod tests {
     use super::DynamicList;
-    use core::assert_eq;
+    use std::assert_eq;
 
     #[test]
     fn test_into_iter() {
