@@ -4,11 +4,10 @@
 //! speed up code by shrinking the stack size of large types,
 //! and make comparisons for any type as fast as integers.
 
+use alloc::borrow::ToOwned;
 use core::{fmt::Debug, hash::Hash, ops::Deref};
-use std::sync::{OnceLock, PoisonError, RwLock};
-
-#[cfg(not(feature = "std"))]
-use alloc::boxed::Box;
+use lock_api::RwLock;
+use once_cell::sync::OnceCell;
 
 use crate::HashSet;
 
@@ -124,12 +123,12 @@ impl Internable for str {
 /// The implementation ensures that two equal values return two equal [`Interned<T>`] values.
 ///
 /// To use an [`Interner<T>`], `T` must implement [`Internable`].
-pub struct Interner<T: ?Sized + 'static>(OnceLock<RwLock<HashSet<&'static T>>>);
+pub struct Interner<T: ?Sized + 'static>(OnceCell<RwLock<HashSet<&'static T>>>);
 
 impl<T: ?Sized> Interner<T> {
     /// Creates a new empty interner
     pub const fn new() -> Self {
-        Self(OnceLock::new())
+        Self(OnceCell::new())
     }
 }
 
@@ -142,13 +141,13 @@ impl<T: Internable + ?Sized> Interner<T> {
     pub fn intern(&self, value: &T) -> Interned<T> {
         let lock = self.0.get_or_init(Default::default);
         {
-            let set = lock.read().unwrap_or_else(PoisonError::into_inner);
+            let set = lock.read();
             if let Some(value) = set.get(value) {
                 return Interned(*value);
             }
         }
         {
-            let mut set = lock.write().unwrap_or_else(PoisonError::into_inner);
+            let mut set = lock.write();
             if let Some(value) = set.get(value) {
                 Interned(*value)
             } else {

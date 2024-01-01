@@ -13,13 +13,14 @@ pub mod prelude {
 
 #[cfg(not(feature = "std"))]
 extern crate alloc;
+#[cfg(all(feature = "once_cell", not(feature = "std")))]
+extern crate lock_api;
+#[cfg(all(feature = "once_cell", not(feature = "std")))]
+extern crate once_cell;
 
 #[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
-#[cfg(feature = "std")]
-use std::boxed::Box;
 
-#[cfg(feature = "std")]
 pub mod futures;
 pub mod label;
 mod short_names;
@@ -33,7 +34,10 @@ pub mod uuid;
 mod cow_arc;
 mod default;
 mod float_ord;
-pub mod intern;
+#[cfg(feature = "std")]
+mod intern;
+#[cfg(not(feature = "std"))]
+pub mod intern_no_std;
 
 pub use crate::uuid::Uuid;
 pub use ahash::{AHasher, RandomState};
@@ -48,6 +52,11 @@ pub use smallvec;
 pub use thiserror;
 pub use tracing;
 pub use web_time::{Duration, Instant, SystemTime, SystemTimeError, TryFromFloatSecsError};
+
+#[cfg(feature = "std")]
+pub use intern;
+#[cfg(not(feature = "std"))]
+pub use intern_no_std as intern;
 
 #[allow(missing_docs)]
 pub mod nonmax {

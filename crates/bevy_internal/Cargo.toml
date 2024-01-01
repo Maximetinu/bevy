@@ -162,15 +162,14 @@ std = [
   "bevy_tasks/std",
 ]
 
-libm = ["bevy_math/libm"]
-
-rclite = ["bevy_tasks/rclite"]
-
-once_cell = ["bevy_tasks/once_cell"]
-
-alloc = ["bevy_log/alloc"]
-
-thread_local_exp = ["bevy_tasks/thread_local_exp"]
+no_std = [
+  "bevy_math/libm",
+  "bevy_tasks/rclite",
+  "bevy_tasks/once_cell",
+  "bevy_tasks/thread_local_exp",
+  "bevy_log/alloc",
+  "bevy_utils/once_cell",
+]
 
 [dependencies]
 # bevy

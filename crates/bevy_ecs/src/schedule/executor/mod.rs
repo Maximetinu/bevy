@@ -1,7 +1,17 @@
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    feature = "std",
+    feature = "multi-threaded"
+))]
 mod multi_threaded;
 mod simple;
 mod single_threaded;
 
+#[cfg(all(
+    not(target_arch = "wasm32"),
+    feature = "std",
+    feature = "multi-threaded"
+))]
 pub use self::multi_threaded::{MainThreadExecutor, MultiThreadedExecutor};
 pub use self::simple::SimpleExecutor;
 pub use self::single_threaded::SingleThreadedExecutor;

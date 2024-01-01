@@ -19,6 +19,7 @@ std = [
   "bevy_log/std",
   "bevy_time/std",
   "bevy_utils/std",
+  "sysinfo",
 ]
 
 [dependencies]
@@ -35,11 +36,11 @@ bevy_utils = { path = "../bevy_utils", default-features = false, version = "0.12
 # Some features of sysinfo are not supported by apple. This will disable those features on apple devices
 sysinfo = { version = "0.30.0", default-features = false, features = [
   "apple-app-store",
-] }
+], optional = true }
 
 # Only include when not bevy_dynamic_plugin and on linux/windows/android
 [target.'cfg(any(target_os = "linux", target_os = "windows", target_os = "android"))'.dependencies]
-sysinfo = { version = "0.30.0", default-features = false }
+sysinfo = { version = "0.30.0", default-features = false, optional = true }
 
 [lints]
 workspace = true

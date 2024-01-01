@@ -18,6 +18,7 @@ std = [
   "uuid/std",
   "petgraph/std",
 ]
+once_cell = ["dep:once_cell", "dep:lock_api"]
 
 [dependencies]
 ahash = { version = "0.8.3", default-features = false }
@@ -30,6 +31,8 @@ petgraph = { path = "../../../petgraph", default-features = false, features = ["
 thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 nonmax = "0.5"
 smallvec = { version = "1.11", features = ["union", "const_generics"] }
+once_cell = { version = "1.19.0", default-features = false, optional = true }
+lock_api = { version = "0.4", optional = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 getrandom = { version = "0.2.0", features = ["js"] }

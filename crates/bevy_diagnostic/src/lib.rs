@@ -3,6 +3,7 @@ mod diagnostic;
 mod entity_count_diagnostics_plugin;
 mod frame_time_diagnostics_plugin;
 mod log_diagnostics_plugin;
+#[cfg(feature = "std")]
 mod system_information_diagnostics_plugin;
 
 use bevy_app::prelude::*;
@@ -10,6 +11,7 @@ pub use diagnostic::*;
 pub use entity_count_diagnostics_plugin::EntityCountDiagnosticsPlugin;
 pub use frame_time_diagnostics_plugin::FrameTimeDiagnosticsPlugin;
 pub use log_diagnostics_plugin::LogDiagnosticsPlugin;
+#[cfg(feature = "std")]
 pub use system_information_diagnostics_plugin::SystemInformationDiagnosticsPlugin;
 
 /// Adds core diagnostics resources to an App.
@@ -18,6 +20,7 @@ pub struct DiagnosticsPlugin;
 
 impl Plugin for DiagnosticsPlugin {
     fn build(&self, app: &mut App) {
+        #[cfg(feature = "std")]
         app.init_resource::<DiagnosticsStore>().add_systems(
             Startup,
             system_information_diagnostics_plugin::internal::log_system_info,
