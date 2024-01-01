@@ -1,6 +1,15 @@
 use super::{InvalidDirectionError, Primitive2d, WindingOrder};
 use crate::Vec2;
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::boxed::Box;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 /// A normalized vector pointing in a direction in 2D space
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
@@ -51,7 +60,7 @@ impl TryFrom<Vec2> for Direction2d {
     }
 }
 
-impl std::ops::Deref for Direction2d {
+impl core::ops::Deref for Direction2d {
     type Target = Vec2;
     fn deref(&self) -> &Self::Target {
         &self.0

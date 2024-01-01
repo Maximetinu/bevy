@@ -11,6 +11,15 @@ pub mod prelude {
     pub use crate::default;
 }
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+#[cfg(feature = "std")]
+use std::boxed::Box;
+
+#[cfg(feature = "std")]
 pub mod futures;
 pub mod label;
 mod short_names;
@@ -20,14 +29,17 @@ pub mod syncunsafecell;
 
 pub mod uuid;
 
+#[cfg(feature = "std")]
 mod cow_arc;
 mod default;
 mod float_ord;
+#[cfg(feature = "std")]
 pub mod intern;
 
 pub use crate::uuid::Uuid;
 pub use ahash::{AHasher, RandomState};
 pub use bevy_utils_proc_macros::*;
+#[cfg(feature = "std")]
 pub use cow_arc::*;
 pub use default::default;
 pub use float_ord::*;
@@ -43,8 +55,7 @@ pub mod nonmax {
     pub use nonmax::*;
 }
 
-use hashbrown::hash_map::RawEntryMut;
-use std::{
+use core::{
     fmt::Debug,
     future::Future,
     hash::{BuildHasher, BuildHasherDefault, Hash, Hasher},
@@ -53,6 +64,7 @@ use std::{
     ops::Deref,
     pin::Pin,
 };
+use hashbrown::hash_map::RawEntryMut;
 
 /// An owned and dynamically typed Future used when you can't statically type your result or need to add some indirection.
 #[cfg(not(target_arch = "wasm32"))]
@@ -168,7 +180,7 @@ impl<V: PartialEq, H> PartialEq for Hashed<V, H> {
 }
 
 impl<V: Debug, H> Debug for Hashed<V, H> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("Hashed")
             .field("hash", &self.hash)
             .field("value", &self.value)
@@ -352,12 +364,12 @@ pub type EntityHashSet<T> = hashbrown::HashSet<T, EntityHash>;
 /// // Make sure the message only gets printed if a panic occurs.
 /// // If we remove this line, then the message will be printed regardless of whether a panic occurs
 /// // -- similar to a `try ... finally` block.
-/// std::mem::forget(_catch);
+/// core::mem::forget(_catch);
 /// # }
 /// #
 /// # test_panic(false, |_| unreachable!());
 /// # let mut did_log = false;
-/// # std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+/// # core::panic::catch_unwind(core::panic::AssertUnwindSafe(|| {
 /// #   test_panic(true, |_| did_log = true);
 /// # }));
 /// # assert!(did_log);

@@ -37,6 +37,7 @@ std = [
 
   "serde?/std",
 ]
+libm = ["bevy_math/libm"]
 
 [dev-dependencies]
 crossbeam-channel = "0.5.0"

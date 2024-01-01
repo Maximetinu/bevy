@@ -7,6 +7,11 @@ use core::{
     thread::{self, JoinHandle},
 };
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 use async_task::FallibleTask;
 use concurrent_queue::ConcurrentQueue;
 use futures_lite::FutureExt;

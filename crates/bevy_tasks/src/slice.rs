@@ -1,5 +1,10 @@
 use super::TaskPool;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 /// Provides functions for mapping read-only slices across a provided [`TaskPool`].
 pub trait ParallelSlice<T: Sync>: AsRef<[T]> {
     /// Splits the slice in chunks of size `chunks_size` or less and maps the chunks

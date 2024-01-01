@@ -162,6 +162,8 @@ std = [
   "bevy_tasks/std",
 ]
 
+libm = ["bevy_math/libm"]
+
 [dependencies]
 # bevy
 bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0" }

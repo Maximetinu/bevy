@@ -11,6 +11,7 @@ keywords = ["bevy"]
 [dependencies]
 glam = { version = "0.24.1", default-features = false, features = ["bytemuck"] }
 serde = { version = "1", default-features = false, features = ["derive"], optional = true }
+libm = { version = "0.2", optional = true }
 
 [features]
 default = ["std"]
@@ -22,6 +23,7 @@ mint = ["glam/mint"]
 glam_assert = ["glam/glam-assert"]
 # Enable assertions in debug builds to check the validity of parameters passed to glam
 debug_glam_assert = ["glam/debug-glam-assert"]
+libm = ["glam/libm", "dep:libm"]
 
 [lints]
 workspace = true

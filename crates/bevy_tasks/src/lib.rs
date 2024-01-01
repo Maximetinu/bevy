@@ -2,6 +2,9 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 mod slice;
 pub use slice::{ParallelSlice, ParallelSliceMut};
 

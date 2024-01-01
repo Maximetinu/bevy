@@ -2,6 +2,16 @@ use core::{cell::RefCell, future::Future, marker::PhantomData, mem};
 use std::rc::Rc;
 use std::sync::Arc;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
+#[cfg(not(feature = "std"))]
+use alloc::string::String;
+#[cfg(feature = "std")]
+use std::string::String;
+
 thread_local! {
     static LOCAL_EXECUTOR: async_executor::LocalExecutor<'static> = async_executor::LocalExecutor::new();
 }

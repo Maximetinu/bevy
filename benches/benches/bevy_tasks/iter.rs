@@ -1,6 +1,11 @@
 use bevy_tasks::{ParallelIterator, TaskPoolBuilder};
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 struct ParChunks<'a, T>(core::slice::Chunks<'a, T>);
 impl<'a, T> ParallelIterator<core::slice::Iter<'a, T>> for ParChunks<'a, T>
 where

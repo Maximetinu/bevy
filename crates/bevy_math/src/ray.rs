@@ -35,10 +35,26 @@ impl Ray2d {
     }
 
     /// Get the distance to a plane if the ray intersects it
+    #[cfg(feature = "std")]
     #[inline]
     pub fn intersect_plane(&self, plane_origin: Vec2, plane: Plane2d) -> Option<f32> {
         let denominator = plane.normal.dot(*self.direction);
         if denominator.abs() > f32::EPSILON {
+            let distance = (plane_origin - self.origin).dot(*plane.normal) / denominator;
+            if distance > f32::EPSILON {
+                return Some(distance);
+            }
+        }
+        None
+    }
+
+    #[cfg(not(feature = "std"))]
+    #[inline]
+    pub fn intersect_plane(&self, plane_origin: Vec2, plane: Plane2d) -> Option<f32> {
+        let denominator = plane.normal.dot(*self.direction);
+        if (denominator > 0. && denominator > f32::EPSILON)
+            || (denominator < 0. && denominator < -f32::EPSILON)
+        {
             let distance = (plane_origin - self.origin).dot(*plane.normal) / denominator;
             if distance > f32::EPSILON {
                 return Some(distance);
@@ -80,10 +96,26 @@ impl Ray3d {
     }
 
     /// Get the distance to a plane if the ray intersects it
+    #[cfg(feature = "std")]
     #[inline]
     pub fn intersect_plane(&self, plane_origin: Vec3, plane: Plane3d) -> Option<f32> {
         let denominator = plane.normal.dot(*self.direction);
         if denominator.abs() > f32::EPSILON {
+            let distance = (plane_origin - self.origin).dot(*plane.normal) / denominator;
+            if distance > f32::EPSILON {
+                return Some(distance);
+            }
+        }
+        None
+    }
+
+    #[cfg(not(feature = "std"))]
+    #[inline]
+    pub fn intersect_plane(&self, plane_origin: Vec3, plane: Plane3d) -> Option<f32> {
+        let denominator = plane.normal.dot(*self.direction);
+        if (denominator > 0. && denominator > f32::EPSILON)
+            || (denominator < 0. && denominator < -f32::EPSILON)
+        {
             let distance = (plane_origin - self.origin).dot(*plane.normal) / denominator;
             if distance > f32::EPSILON {
                 return Some(distance);

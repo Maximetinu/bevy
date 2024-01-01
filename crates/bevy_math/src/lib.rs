@@ -7,6 +7,12 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![warn(missing_docs)]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
+#[cfg(feature = "libm")]
+extern crate libm;
+
 mod affine3;
 mod aspect_ratio;
 pub mod cubic_splines;

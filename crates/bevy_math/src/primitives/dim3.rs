@@ -1,6 +1,15 @@
 use super::{InvalidDirectionError, Primitive3d};
 use crate::Vec3;
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::boxed::Box;
+#[cfg(feature = "std")]
+use std::vec::Vec;
+
 /// A normalized vector pointing in a direction in 3D space
 #[derive(Clone, Copy, Debug, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
@@ -51,7 +60,7 @@ impl TryFrom<Vec3> for Direction3d {
     }
 }
 
-impl std::ops::Deref for Direction3d {
+impl core::ops::Deref for Direction3d {
     type Target = Vec3;
     fn deref(&self) -> &Self::Target {
         &self.0
@@ -371,9 +380,9 @@ impl Torus {
         }
 
         match self.major_radius.partial_cmp(&self.minor_radius).unwrap() {
-            std::cmp::Ordering::Greater => TorusKind::Ring,
-            std::cmp::Ordering::Equal => TorusKind::Horn,
-            std::cmp::Ordering::Less => TorusKind::Spindle,
+            core::cmp::Ordering::Greater => TorusKind::Ring,
+            core::cmp::Ordering::Equal => TorusKind::Horn,
+            core::cmp::Ordering::Less => TorusKind::Spindle,
         }
     }
 }

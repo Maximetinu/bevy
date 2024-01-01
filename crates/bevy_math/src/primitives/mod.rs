@@ -24,8 +24,8 @@ pub enum InvalidDirectionError {
     NaN,
 }
 
-impl std::fmt::Display for InvalidDirectionError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for InvalidDirectionError {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(
             f,
             "Direction can not be zero (or very close to zero), or non-finite."

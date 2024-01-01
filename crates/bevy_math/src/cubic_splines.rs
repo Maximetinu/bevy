@@ -2,11 +2,16 @@
 
 use glam::{Vec2, Vec3, Vec3A};
 
-use std::{
+use core::{
     fmt::Debug,
     iter::Sum,
     ops::{Add, Mul, Sub},
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+#[cfg(feature = "std")]
+use std::vec::Vec;
 
 /// A point in space of any dimension that supports the math ops needed for cubic spline
 /// interpolation.
@@ -302,17 +307,33 @@ pub struct CubicSegment<P: Point> {
 
 impl<P: Point> CubicSegment<P> {
     /// Instantaneous position of a point at parametric value `t`.
+    #[cfg(feature = "std")]
     #[inline]
     pub fn position(&self, t: f32) -> P {
         let [a, b, c, d] = self.coeff;
         a + b * t + c * t.powi(2) + d * t.powi(3)
     }
 
+    #[cfg(not(feature = "std"))]
+    #[inline]
+    pub fn position(&self, t: f32) -> P {
+        let [a, b, c, d] = self.coeff;
+        a + b * t + c * t * t + d * t * t * t
+    }
+
     /// Instantaneous velocity of a point at parametric value `t`.
+    #[cfg(feature = "std")]
     #[inline]
     pub fn velocity(&self, t: f32) -> P {
         let [_, b, c, d] = self.coeff;
         b + c * 2.0 * t + d * 3.0 * t.powi(2)
+    }
+
+    #[cfg(not(feature = "std"))]
+    #[inline]
+    pub fn velocity(&self, t: f32) -> P {
+        let [_, b, c, d] = self.coeff;
+        b + c * 2.0 * t + d * 3.0 * t * t
     }
 
     /// Instantaneous acceleration of a point at parametric value `t`.
@@ -412,6 +433,7 @@ impl CubicSegment<Vec2> {
     }
 
     /// Find the `y` value of the curve at the given `x` value using the Newton-Raphson method.
+    #[cfg(feature = "std")]
     #[inline]
     fn find_y_given_x(&self, x: f32) -> f32 {
         let mut t_guess = x;
@@ -420,6 +442,26 @@ impl CubicSegment<Vec2> {
             pos_guess = self.position(t_guess);
             let error = pos_guess.x - x;
             if error.abs() <= Self::MAX_ERROR {
+                break;
+            }
+            // Using Newton's method, use the tangent line to estimate a better guess value.
+            let slope = self.velocity(t_guess).x; // dx/dt
+            t_guess -= error / slope;
+        }
+        pos_guess.y
+    }
+
+    #[cfg(not(feature = "std"))]
+    #[inline]
+    fn find_y_given_x(&self, x: f32) -> f32 {
+        let mut t_guess = x;
+        let mut pos_guess = Vec2::ZERO;
+        for _ in 0..Self::MAX_ITERS {
+            pos_guess = self.position(t_guess);
+            let error = pos_guess.x - x;
+            if error < 0. && error > -Self::MAX_ERROR {
+                break;
+            } else if error > 0. && error < Self::MAX_ERROR {
                 break;
             }
             // Using Newton's method, use the tangent line to estimate a better guess value.
@@ -520,12 +562,24 @@ impl<P: Point> CubicCurve<P> {
     }
 
     /// Returns the [`CubicSegment`] and local `t` value given a spline's global `t` value.
+    #[cfg(feature = "std")]
     #[inline]
     fn segment(&self, t: f32) -> (&CubicSegment<P>, f32) {
         if self.segments.len() == 1 {
             (&self.segments[0], t)
         } else {
             let i = (t.floor() as usize).clamp(0, self.segments.len() - 1);
+            (&self.segments[i], t - i as f32)
+        }
+    }
+
+    #[cfg(feature = "libm")]
+    #[inline]
+    fn segment(&self, t: f32) -> (&CubicSegment<P>, f32) {
+        if self.segments.len() == 1 {
+            (&self.segments[0], t)
+        } else {
+            let i = (libm::floorf(t) as usize).clamp(0, self.segments.len() - 1);
             (&self.segments[i], t - i as f32)
         }
     }
