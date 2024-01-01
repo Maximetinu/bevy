@@ -39,7 +39,7 @@ impl<I, O> RemovedSystem<I, O> {
 /// These are opaque identifiers, keyed to a specific [`World`],
 /// and are created via [`World::register_system`].
 #[derive(Eq)]
-pub struct SystemId<I = (), O = ()>(Entity, std::marker::PhantomData<fn(I) -> O>);
+pub struct SystemId<I = (), O = ()>(Entity, core::marker::PhantomData<fn(I) -> O>);
 
 // A manual impl is used because the trait bounds should ignore the `I` and `O` phantom parameters.
 impl<I, O> Copy for SystemId<I, O> {}
@@ -59,14 +59,14 @@ impl<I, O> PartialEq for SystemId<I, O> {
 }
 
 // A manual impl is used because the trait bounds should ignore the `I` and `O` phantom parameters.
-impl<I, O> std::hash::Hash for SystemId<I, O> {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+impl<I, O> core::hash::Hash for SystemId<I, O> {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.0.hash(state);
     }
 }
 
-impl<I, O> std::fmt::Debug for SystemId<I, O> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<I, O> core::fmt::Debug for SystemId<I, O> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_tuple("SystemId")
             .field(&self.0)
             .field(&self.1)
@@ -105,7 +105,7 @@ impl World {
                 system,
             })
             .id(),
-            std::marker::PhantomData,
+            core::marker::PhantomData,
         )
     }
 
@@ -367,8 +367,8 @@ pub enum RegisteredSystemError<I = (), O = ()> {
     SelfRemove(SystemId<I, O>),
 }
 
-impl<I, O> std::fmt::Debug for RegisteredSystemError<I, O> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<I, O> core::fmt::Debug for RegisteredSystemError<I, O> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::SystemIdNotRegistered(arg0) => {
                 f.debug_tuple("SystemIdNotRegistered").field(arg0).finish()

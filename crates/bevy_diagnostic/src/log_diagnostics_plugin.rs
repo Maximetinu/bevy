@@ -5,6 +5,9 @@ use bevy_log::{debug, info};
 use bevy_time::{Real, Time, Timer, TimerMode};
 use bevy_utils::Duration;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// An App Plugin that logs diagnostics to the console.
 ///
 /// Diagnostics are collected by plugins such as

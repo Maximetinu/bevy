@@ -164,6 +164,14 @@ std = [
 
 libm = ["bevy_math/libm"]
 
+rclite = ["bevy_tasks/rclite"]
+
+once_cell = ["bevy_tasks/once_cell"]
+
+alloc = ["bevy_log/alloc"]
+
+thread_local_exp = ["bevy_tasks/thread_local_exp"]
+
 [dependencies]
 # bevy
 bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0" }

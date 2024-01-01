@@ -5,6 +5,9 @@ use bevy_ecs::{
     world::{Mut, World},
 };
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// The schedule that contains the app logic that is evaluated each tick of [`App::update()`].
 ///
 /// By default, it will run the following schedules in the given order:

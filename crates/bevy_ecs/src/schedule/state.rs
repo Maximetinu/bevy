@@ -1,7 +1,7 @@
-use std::fmt::Debug;
-use std::hash::Hash;
-use std::mem;
-use std::ops::Deref;
+use core::fmt::Debug;
+use core::hash::Hash;
+use core::mem;
+use core::ops::Deref;
 
 use crate as bevy_ecs;
 use crate::change_detection::DetectChangesMut;

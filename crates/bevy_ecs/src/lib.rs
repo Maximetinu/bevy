@@ -20,7 +20,7 @@ pub mod storage;
 pub mod system;
 pub mod world;
 
-use std::any::TypeId;
+use core::any::TypeId;
 
 pub use bevy_ptr as ptr;
 

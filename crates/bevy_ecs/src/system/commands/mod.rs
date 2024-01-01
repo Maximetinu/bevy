@@ -12,9 +12,9 @@ use crate::{
 use bevy_ecs_macros::SystemParam;
 use bevy_utils::tracing::{error, info};
 pub use command_queue::CommandQueue;
+use core::marker::PhantomData;
 #[cfg(feature = "std")]
 pub use parallel_scope::*;
-use std::marker::PhantomData;
 
 use super::{Deferred, Resource, SystemBuffer, SystemMeta};
 
@@ -1054,7 +1054,7 @@ where
         if let Err(invalid_entities) = world.insert_or_spawn_batch(self.bundles_iter) {
             error!(
                 "Failed to 'insert or spawn' bundle of type {} into the following invalid entities: {:?}",
-                std::any::type_name::<B>(),
+                core::any::type_name::<B>(),
                 invalid_entities
             );
         }
@@ -1096,7 +1096,7 @@ where
         if let Some(mut entity) = world.get_entity_mut(self.entity) {
             entity.insert(self.bundle);
         } else {
-            panic!("error[B0003]: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World.", std::any::type_name::<T>(), self.entity);
+            panic!("error[B0003]: Could not insert a bundle (of type `{}`) for entity {:?} because it doesn't exist in this World.", core::any::type_name::<T>(), self.entity);
         }
     }
 }

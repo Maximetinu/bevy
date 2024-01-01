@@ -1,5 +1,5 @@
 use crate::{component::Tick, world::unsafe_world_cell::UnsafeWorldCell};
-use std::ops::Range;
+use core::ops::Range;
 
 use super::{QueryData, QueryFilter, QueryItem, QueryState};
 

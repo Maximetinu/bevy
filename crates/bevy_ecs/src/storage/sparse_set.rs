@@ -4,7 +4,10 @@ use crate::{
     storage::{Column, TableRow},
 };
 use bevy_ptr::{OwningPtr, Ptr};
-use std::{cell::UnsafeCell, hash::Hash, marker::PhantomData};
+use core::{cell::UnsafeCell, hash::Hash, marker::PhantomData};
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 type EntityIndex = u32;
 

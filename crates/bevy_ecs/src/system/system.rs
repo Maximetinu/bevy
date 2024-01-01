@@ -6,7 +6,7 @@ use crate::schedule::InternedSystemSet;
 use crate::world::unsafe_world_cell::UnsafeWorldCell;
 use crate::{archetype::ArchetypeComponentId, component::ComponentId, query::Access, world::World};
 
-use std::any::TypeId;
+use core::any::TypeId;
 use std::borrow::Cow;
 
 use super::IntoSystem;
@@ -154,7 +154,7 @@ pub(crate) fn check_system_change_tick(last_run: &mut Tick, this_run: Tick, syst
 }
 
 impl<In: 'static, Out: 'static> Debug for dyn System<In = In, Out = Out> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("System")
             .field("name", &self.name())
             .field("is_exclusive", &self.is_exclusive())

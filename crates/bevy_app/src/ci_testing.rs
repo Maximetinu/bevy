@@ -6,6 +6,9 @@ use serde::Deserialize;
 use bevy_ecs::prelude::Resource;
 use bevy_utils::tracing::info;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// A configuration struct for automated CI testing.
 ///
 /// It gets used when the `bevy_ci_testing` feature is enabled to automatically

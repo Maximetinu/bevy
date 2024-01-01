@@ -9,8 +9,6 @@ use core::{
 
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
-#[cfg(feature = "std")]
-use std::vec::Vec;
 
 use async_task::FallibleTask;
 use concurrent_queue::ConcurrentQueue;

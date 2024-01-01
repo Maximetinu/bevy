@@ -3,8 +3,8 @@ use crate::reflect::AppTypeRegistry;
 use crate::system::{Command, EntityCommands, Resource};
 use crate::{entity::Entity, reflect::ReflectComponent, world::World};
 use bevy_reflect::{Reflect, TypeRegistry};
+use core::marker::PhantomData;
 use std::borrow::Cow;
-use std::marker::PhantomData;
 
 /// An extension trait for [`EntityCommands`] for reflection related functions
 pub trait ReflectCommandExt {

@@ -1,4 +1,5 @@
 #![cfg_attr(not(feature = "std"), no_std)]
+#![cfg_attr(feature = "thread_local_exp", feature(thread_local))]
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
@@ -60,8 +61,14 @@ use core::num::NonZeroUsize;
 /// it will return a default value of 1 if it internally errors out.
 ///
 /// This will always return at least 1.
+#[cfg(all(not(target_arch = "wasm32"), feature = "multi-threaded"))]
 pub fn available_parallelism() -> usize {
     std::thread::available_parallelism()
         .map(NonZeroUsize::get)
         .unwrap_or(1)
+}
+
+#[cfg(any(target_arch = "wasm32", not(feature = "multi-threaded")))]
+pub fn available_parallelism() -> usize {
+    1
 }

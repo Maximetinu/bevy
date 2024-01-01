@@ -33,7 +33,6 @@ pub mod uuid;
 mod cow_arc;
 mod default;
 mod float_ord;
-#[cfg(feature = "std")]
 pub mod intern;
 
 pub use crate::uuid::Uuid;

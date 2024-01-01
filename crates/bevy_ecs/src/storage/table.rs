@@ -6,11 +6,14 @@ use crate::{
 };
 use bevy_ptr::{OwningPtr, Ptr, PtrMut, UnsafeCellDeref};
 use bevy_utils::HashMap;
-use std::alloc::Layout;
-use std::{
+use core::alloc::Layout;
+use core::{
     cell::UnsafeCell,
     ops::{Index, IndexMut},
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// An opaque unique ID for a [`Table`] within a [`World`].
 ///
@@ -920,7 +923,7 @@ impl Tables {
     }
 
     /// Iterates through all of the tables stored within in [`TableId`] order.
-    pub fn iter(&self) -> std::slice::Iter<'_, Table> {
+    pub fn iter(&self) -> core::slice::Iter<'_, Table> {
         self.tables.iter()
     }
 

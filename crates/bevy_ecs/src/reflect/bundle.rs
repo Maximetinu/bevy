@@ -3,7 +3,7 @@
 //! This module exports two types: [`ReflectBundleFns`] and [`ReflectBundle`].
 //!
 //! Same as [`super::component`], but for bundles.
-use std::any::TypeId;
+use core::any::TypeId;
 
 use crate::{
     prelude::Bundle,
@@ -146,7 +146,7 @@ impl<B: Bundle + Reflect + FromWorld> FromType<B> for ReflectBundle {
                     _ => panic!(
                         "expected bundle `{}` to be named struct or tuple",
                         // FIXME: once we have unique reflect, use `TypePath`.
-                        std::any::type_name::<B>(),
+                        core::any::type_name::<B>(),
                     ),
                 }
             },
@@ -164,7 +164,7 @@ impl<B: Bundle + Reflect + FromWorld> FromType<B> for ReflectBundle {
                     _ => panic!(
                         "expected bundle `{}` to be named struct or tuple",
                         // FIXME: once we have unique reflect, use `TypePath`.
-                        std::any::type_name::<B>(),
+                        core::any::type_name::<B>(),
                     ),
                 }
             },

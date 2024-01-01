@@ -83,7 +83,7 @@ impl<'a, T: PartialEq + ?Sized> Eq for CowArc<'a, T> {}
 
 impl<'a, T: Hash + ?Sized> Hash for CowArc<'a, T> {
     #[inline]
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.deref().hash(state);
     }
 }
@@ -104,7 +104,7 @@ impl<'a, T: Display + ?Sized> Display for CowArc<'a, T> {
 
 impl<'a, T: PartialOrd + ?Sized> PartialOrd for CowArc<'a, T> {
     #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         self.deref().partial_cmp(other.deref())
     }
 }
@@ -123,7 +123,7 @@ impl Default for CowArc<'static, Path> {
 
 impl<'a, T: Ord + ?Sized> Ord for CowArc<'a, T> {
     #[inline]
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         self.deref().cmp(other.deref())
     }
 }

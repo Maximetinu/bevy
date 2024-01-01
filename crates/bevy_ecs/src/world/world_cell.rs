@@ -86,7 +86,7 @@ impl<'w> Drop for WorldCell<'w> {
             let world_cached_access = &mut world.archetype_component_access;
 
             // give world ArchetypeComponentAccess back to reuse allocations
-            std::mem::swap(world_cached_access, &mut *access);
+            core::mem::swap(world_cached_access, &mut *access);
         }
     }
 }
@@ -108,7 +108,7 @@ impl<'w, T> WorldBorrow<'w, T> {
         assert!(
             access.borrow_mut().read(archetype_component_id),
             "Attempted to immutably access {}, but it is already mutably borrowed",
-            std::any::type_name::<T>(),
+            core::any::type_name::<T>(),
         );
         let value = value()?;
         Some(Self {
@@ -152,7 +152,7 @@ impl<'w, T> WorldBorrowMut<'w, T> {
         assert!(
             access.borrow_mut().write(archetype_component_id),
             "Attempted to mutably access {}, but it is already mutably borrowed",
-            std::any::type_name::<T>(),
+            core::any::type_name::<T>(),
         );
         let value = value()?;
         Some(Self {
@@ -188,7 +188,7 @@ impl<'w, T> Drop for WorldBorrowMut<'w, T> {
 impl<'w> WorldCell<'w> {
     pub(crate) fn new(world: &'w mut World) -> Self {
         // this is cheap because ArchetypeComponentAccess::new() is const / allocation free
-        let access = std::mem::replace(
+        let access = core::mem::replace(
             &mut world.archetype_component_access,
             ArchetypeComponentAccess::new(),
         );
@@ -229,7 +229,7 @@ impl<'w> WorldCell<'w> {
                 Did you forget to add it using `app.insert_resource` / `app.init_resource`? 
                 Resources are also implicitly added via `app.add_event`,
                 and can be added by plugins.",
-                std::any::type_name::<T>()
+                core::any::type_name::<T>()
             ),
         }
     }
@@ -263,7 +263,7 @@ impl<'w> WorldCell<'w> {
                 Did you forget to add it using `app.insert_resource` / `app.init_resource`? 
                 Resources are also implicitly added via `app.add_event`,
                 and can be added by plugins.",
-                std::any::type_name::<T>()
+                core::any::type_name::<T>()
             ),
         }
     }
@@ -297,7 +297,7 @@ impl<'w> WorldCell<'w> {
                 "Requested non-send resource {} does not exist in the `World`. 
                 Did you forget to add it using `app.insert_non_send_resource` / `app.init_non_send_resource`? 
                 Non-send resources can also be be added by plugins.",
-                std::any::type_name::<T>()
+                core::any::type_name::<T>()
             ),
         }
     }
@@ -331,7 +331,7 @@ impl<'w> WorldCell<'w> {
                 "Requested non-send resource {} does not exist in the `World`. 
                 Did you forget to add it using `app.insert_non_send_resource` / `app.init_non_send_resource`? 
                 Non-send resources can also be be added by plugins.",
-                std::any::type_name::<T>()
+                core::any::type_name::<T>()
             ),
         }
     }
@@ -339,13 +339,13 @@ impl<'w> WorldCell<'w> {
     /// Sends an [`Event`].
     #[inline]
     pub fn send_event<E: Event>(&self, event: E) {
-        self.send_event_batch(std::iter::once(event));
+        self.send_event_batch(core::iter::once(event));
     }
 
     /// Sends the default value of the [`Event`] of type `E`.
     #[inline]
     pub fn send_event_default<E: Event + Default>(&self) {
-        self.send_event_batch(std::iter::once(E::default()));
+        self.send_event_batch(core::iter::once(E::default()));
     }
 
     /// Sends a batch of [`Event`]s from an iterator.
@@ -355,7 +355,7 @@ impl<'w> WorldCell<'w> {
             Some(mut events_resource) => events_resource.extend(events),
             None => error!(
                     "Unable to send event `{}`\n\tEvent must be added to the app with `add_event()`\n\thttps://docs.rs/bevy/*/bevy/app/struct.App.html#method.add_event ",
-                    std::any::type_name::<E>()
+                    core::any::type_name::<E>()
                 ),
         }
     }
@@ -366,7 +366,7 @@ mod tests {
     use super::BASE_ACCESS;
     use crate as bevy_ecs;
     use crate::{system::Resource, world::World};
-    use std::any::TypeId;
+    use core::any::TypeId;
 
     #[derive(Resource)]
     struct A(u32);

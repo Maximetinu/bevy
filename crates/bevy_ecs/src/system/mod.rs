@@ -113,6 +113,9 @@ mod system;
 mod system_param;
 mod system_registry;
 
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Cow;
+#[cfg(feature = "std")]
 use std::borrow::Cow;
 
 pub use adapter_system::*;
@@ -310,7 +313,7 @@ pub fn assert_system_does_not_conflict<Out, Params, S: IntoSystem<(), Out, Param
 
 #[cfg(test)]
 mod tests {
-    use std::any::TypeId;
+    use core::any::TypeId;
 
     use bevy_utils::default;
 

@@ -19,6 +19,9 @@ pub use self::state::*;
 
 pub use self::graph_utils::NodeId;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -17,12 +17,16 @@ pub use bevy_ecs_macros::Resource;
 pub use bevy_ecs_macros::SystemParam;
 use bevy_ptr::UnsafeCellDeref;
 use bevy_utils::{all_tuples, synccell::SyncCell};
-use std::{
-    borrow::Cow,
+use core::{
     fmt::Debug,
     marker::PhantomData,
     ops::{Deref, DerefMut},
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Cow;
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 /// A parameter that can be used in a [`System`](super::System).
 ///
@@ -48,7 +52,7 @@ use std::{
 /// # use bevy_ecs::prelude::*;
 /// # #[derive(Resource)]
 /// # struct SomeResource;
-/// use std::marker::PhantomData;
+/// use core::marker::PhantomData;
 /// use bevy_ecs::system::SystemParam;
 ///
 /// #[derive(SystemParam)]
@@ -168,8 +172,8 @@ unsafe impl<D: QueryData + 'static, F: QueryFilter + 'static> SystemParam for Qu
         let state = QueryState::new(world);
         assert_component_access_compatibility(
             &system_meta.name,
-            std::any::type_name::<D>(),
-            std::any::type_name::<F>(),
+            core::any::type_name::<D>(),
+            core::any::type_name::<F>(),
             &system_meta.component_access_set,
             &state.component_access,
             world,
@@ -419,7 +423,7 @@ unsafe impl<'a, T: Resource> SystemParam for Res<'a, T> {
         assert!(
             !combined_access.has_write(component_id),
             "error[B0002]: Res<{}> in system {} conflicts with a previous ResMut<{0}> access. Consider removing the duplicate access.",
-            std::any::type_name::<T>(),
+            core::any::type_name::<T>(),
             system_meta.name,
         );
         system_meta
@@ -449,7 +453,7 @@ unsafe impl<'a, T: Resource> SystemParam for Res<'a, T> {
                 panic!(
                     "Resource requested by {} does not exist: {}",
                     system_meta.name,
-                    std::any::type_name::<T>()
+                    core::any::type_name::<T>()
                 )
             });
         Res {
@@ -509,11 +513,11 @@ unsafe impl<'a, T: Resource> SystemParam for ResMut<'a, T> {
         if combined_access.has_write(component_id) {
             panic!(
                 "error[B0002]: ResMut<{}> in system {} conflicts with a previous ResMut<{0}> access. Consider removing the duplicate access.",
-                std::any::type_name::<T>(), system_meta.name);
+                core::any::type_name::<T>(), system_meta.name);
         } else if combined_access.has_read(component_id) {
             panic!(
                 "error[B0002]: ResMut<{}> in system {} conflicts with a previous Res<{0}> access. Consider removing the duplicate access.",
-                std::any::type_name::<T>(), system_meta.name);
+                core::any::type_name::<T>(), system_meta.name);
         }
         system_meta
             .component_access_set
@@ -542,7 +546,7 @@ unsafe impl<'a, T: Resource> SystemParam for ResMut<'a, T> {
                 panic!(
                     "Resource requested by {} does not exist: {}",
                     system_meta.name,
-                    std::any::type_name::<T>()
+                    core::any::type_name::<T>()
                 )
             });
         ResMut {
@@ -944,7 +948,7 @@ impl<'w, T> Debug for NonSend<'w, T>
 where
     T: Debug,
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_tuple("NonSend").field(&self.value).finish()
     }
 }
@@ -996,7 +1000,7 @@ unsafe impl<'a, T: 'static> SystemParam for NonSend<'a, T> {
         assert!(
             !combined_access.has_write(component_id),
             "error[B0002]: NonSend<{}> in system {} conflicts with a previous mutable resource access ({0}). Consider removing the duplicate access.",
-            std::any::type_name::<T>(),
+            core::any::type_name::<T>(),
             system_meta.name,
         );
         system_meta
@@ -1026,7 +1030,7 @@ unsafe impl<'a, T: 'static> SystemParam for NonSend<'a, T> {
                 panic!(
                     "Non-send resource requested by {} does not exist: {}",
                     system_meta.name,
-                    std::any::type_name::<T>()
+                    core::any::type_name::<T>()
                 )
             });
 
@@ -1083,11 +1087,11 @@ unsafe impl<'a, T: 'static> SystemParam for NonSendMut<'a, T> {
         if combined_access.has_write(component_id) {
             panic!(
                 "error[B0002]: NonSendMut<{}> in system {} conflicts with a previous mutable resource access ({0}). Consider removing the duplicate access.",
-                std::any::type_name::<T>(), system_meta.name);
+                core::any::type_name::<T>(), system_meta.name);
         } else if combined_access.has_read(component_id) {
             panic!(
                 "error[B0002]: NonSendMut<{}> in system {} conflicts with a previous immutable resource access ({0}). Consider removing the duplicate access.",
-                std::any::type_name::<T>(), system_meta.name);
+                core::any::type_name::<T>(), system_meta.name);
         }
         system_meta
             .component_access_set
@@ -1116,7 +1120,7 @@ unsafe impl<'a, T: 'static> SystemParam for NonSendMut<'a, T> {
                 panic!(
                     "Non-send resource requested by {} does not exist: {}",
                     system_meta.name,
-                    std::any::type_name::<T>()
+                    core::any::type_name::<T>()
                 )
             });
         NonSendMut {
@@ -1342,10 +1346,10 @@ impl<'s> From<SystemName<'s>> for &'s str {
     }
 }
 
-impl<'s> std::fmt::Display for SystemName<'s> {
+impl<'s> core::fmt::Display for SystemName<'s> {
     #[inline(always)]
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        std::fmt::Display::fmt(&self.name(), f)
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        core::fmt::Display::fmt(&self.name(), f)
     }
 }
 
@@ -1769,7 +1773,7 @@ mod tests {
         }
 
         let mut world = World::new();
-        world.insert_non_send_resource(std::ptr::null_mut::<u8>());
+        world.insert_non_send_resource(core::ptr::null_mut::<u8>());
         let mut schedule = crate::schedule::Schedule::default();
         schedule.add_systems((non_send_param_set, non_send_param_set, non_send_param_set));
         schedule.run(&mut world);
@@ -1784,7 +1788,7 @@ mod tests {
         }
 
         let mut world = World::new();
-        world.insert_non_send_resource(std::ptr::null_mut::<u8>());
+        world.insert_non_send_resource(core::ptr::null_mut::<u8>());
         let mut schedule = crate::schedule::Schedule::default();
         schedule.add_systems((non_send_param_set, non_send_param_set, non_send_param_set));
         schedule.run(&mut world);

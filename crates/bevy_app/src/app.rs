@@ -14,6 +14,9 @@ use std::{
     panic::{catch_unwind, resume_unwind, AssertUnwindSafe},
 };
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
 
@@ -86,7 +89,7 @@ pub struct App {
 }
 
 impl Debug for App {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "App {{ sub_apps: ")?;
         f.debug_map().entries(self.sub_apps.iter()).finish()?;
         write!(f, "}}")
@@ -172,7 +175,7 @@ impl SubApp {
 }
 
 impl Debug for SubApp {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "SubApp {{ app: ")?;
         f.debug_map().entries(self.app.sub_apps.iter()).finish()?;
         write!(f, "}}")
@@ -298,12 +301,12 @@ impl App {
         #[cfg(feature = "trace")]
         let _bevy_app_run_span = info_span!("bevy_app").entered();
 
-        let mut app = std::mem::replace(self, App::empty());
+        let mut app = core::mem::replace(self, App::empty());
         if app.building_plugin_depth > 0 {
             panic!("App::run() was called from within Plugin::build(), which is not allowed.");
         }
 
-        let runner = std::mem::replace(&mut app.runner, Box::new(run_once));
+        let runner = core::mem::replace(&mut app.runner, Box::new(run_once));
         runner(app);
     }
 
@@ -328,7 +331,7 @@ impl App {
     /// plugins are ready, but can be useful for situations where you want to use [`App::update`].
     pub fn finish(&mut self) {
         // temporarily remove the plugin registry to run each plugin's setup function on app.
-        let plugin_registry = std::mem::take(&mut self.plugin_registry);
+        let plugin_registry = core::mem::take(&mut self.plugin_registry);
         for plugin in &plugin_registry {
             plugin.finish(self);
         }
@@ -340,7 +343,7 @@ impl App {
     /// [`App::finish`], but can be useful for situations where you want to use [`App::update`].
     pub fn cleanup(&mut self) {
         // temporarily remove the plugin registry to run each plugin's setup function on app.
-        let plugin_registry = std::mem::take(&mut self.plugin_registry);
+        let plugin_registry = core::mem::take(&mut self.plugin_registry);
         for plugin in &plugin_registry {
             plugin.cleanup(self);
         }
@@ -1026,7 +1029,7 @@ pub struct AppExit;
 
 #[cfg(test)]
 mod tests {
-    use std::marker::PhantomData;
+    use core::marker::PhantomData;
 
     use bevy_ecs::{
         schedule::{OnEnter, States},

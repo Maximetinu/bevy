@@ -43,8 +43,11 @@ use crate::{
     archetype::{ArchetypeId, ArchetypeRow},
     storage::{SparseSetIndex, TableId, TableRow},
 };
+use core::{convert::TryFrom, fmt, hash::Hash, mem, sync::atomic::Ordering};
 use serde::{Deserialize, Serialize};
-use std::{convert::TryFrom, fmt, hash::Hash, mem, sync::atomic::Ordering};
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 #[cfg(target_has_atomic = "64")]
 use std::sync::atomic::AtomicI64 as AtomicIdCursor;
@@ -151,7 +154,7 @@ impl Eq for Entity {}
 // See <https://github.com/rust-lang/rust/issues/106107>
 impl PartialOrd for Entity {
     #[inline]
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+    fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         // Make use of our `Ord` impl to ensure optimal codegen output
         Some(self.cmp(other))
     }
@@ -165,7 +168,7 @@ impl PartialOrd for Entity {
 // See <https://github.com/rust-lang/rust/issues/106107>
 impl Ord for Entity {
     #[inline]
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+    fn cmp(&self, other: &Self) -> core::cmp::Ordering {
         // This will result in better codegen for ordering comparisons, plus
         // avoids pitfalls with regards to macro codegen relying on property
         // position when we want to compare against the bit representation.
@@ -175,7 +178,7 @@ impl Ord for Entity {
 
 impl Hash for Entity {
     #[inline]
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
         self.to_bits().hash(state);
     }
 }
@@ -332,10 +335,10 @@ pub struct ReserveEntitiesIterator<'a> {
     meta: &'a [EntityMeta],
 
     // Reserved indices formerly in the freelist to hand out.
-    index_iter: std::slice::Iter<'a, u32>,
+    index_iter: core::slice::Iter<'a, u32>,
 
     // New Entity indices to hand out, outside the range of meta.len().
-    index_range: std::ops::Range<u32>,
+    index_range: core::ops::Range<u32>,
 }
 
 impl<'a> Iterator for ReserveEntitiesIterator<'a> {
@@ -1004,7 +1007,7 @@ mod tests {
     // part of the best-case performance changes in PR#9903.
     #[test]
     fn entity_hash_keeps_similar_ids_together() {
-        use std::hash::BuildHasher;
+        use core::hash::BuildHasher;
         let hash = bevy_utils::EntityHash;
 
         let first_id = 0xC0FFEE << 8;
@@ -1019,7 +1022,7 @@ mod tests {
 
     #[test]
     fn entity_hash_id_bitflip_affects_high_7_bits() {
-        use std::hash::BuildHasher;
+        use core::hash::BuildHasher;
         let hash = bevy_utils::EntityHash;
 
         let first_id = 0xC0FFEE;

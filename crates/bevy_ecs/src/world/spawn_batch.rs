@@ -3,7 +3,7 @@ use crate::{
     entity::Entity,
     world::World,
 };
-use std::iter::FusedIterator;
+use core::iter::FusedIterator;
 
 /// An iterator that spawns a series of entities and returns the [ID](Entity) of
 /// each spawned entity.

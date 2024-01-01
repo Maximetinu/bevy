@@ -25,8 +25,8 @@ pub(super) struct BlobVec {
 }
 
 // We want to ignore the `drop` field in our `Debug` impl
-impl std::fmt::Debug for BlobVec {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for BlobVec {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("BlobVec")
             .field("item_layout", &self.item_layout)
             .field("capacity", &self.capacity)
@@ -163,7 +163,7 @@ impl BlobVec {
     pub unsafe fn initialize_unchecked(&mut self, index: usize, value: OwningPtr<'_>) {
         debug_assert!(index < self.len());
         let ptr = self.get_unchecked_mut(index);
-        std::ptr::copy_nonoverlapping::<u8>(value.as_ptr(), ptr.as_ptr(), self.item_layout.size());
+        core::ptr::copy_nonoverlapping::<u8>(value.as_ptr(), ptr.as_ptr(), self.item_layout.size());
     }
 
     /// Replaces the value at `index` with `value`. This function does not do any bounds checking.
@@ -221,7 +221,7 @@ impl BlobVec {
         //   so it must still be initialized and it is safe to transfer ownership into the vector.
         // - `source` and `destination` were obtained from different memory locations,
         //   both of which we have exclusive access to, so they are guaranteed not to overlap.
-        std::ptr::copy_nonoverlapping::<u8>(source, destination.as_ptr(), self.item_layout.size());
+        core::ptr::copy_nonoverlapping::<u8>(source, destination.as_ptr(), self.item_layout.size());
     }
 
     /// Appends an element to the back of the vector.
@@ -264,7 +264,7 @@ impl BlobVec {
         let new_len = self.len - 1;
         let size = self.item_layout.size();
         if index != new_len {
-            std::ptr::swap_nonoverlapping::<u8>(
+            core::ptr::swap_nonoverlapping::<u8>(
                 self.get_unchecked_mut(index).as_ptr(),
                 self.get_unchecked_mut(new_len).as_ptr(),
                 size,
@@ -292,11 +292,11 @@ impl BlobVec {
         let last = self.get_unchecked_mut(self.len - 1).as_ptr();
         let target = self.get_unchecked_mut(index).as_ptr();
         // Copy the item at the index into the provided ptr
-        std::ptr::copy_nonoverlapping::<u8>(target, ptr.as_ptr(), self.item_layout.size());
+        core::ptr::copy_nonoverlapping::<u8>(target, ptr.as_ptr(), self.item_layout.size());
         // Recompress the storage by moving the previous last element into the
         // now-free row overwriting the previous data. The removed row may be the last
         // one so a non-overlapping copy must not be used here.
-        std::ptr::copy::<u8>(last, target, self.item_layout.size());
+        core::ptr::copy::<u8>(last, target, self.item_layout.size());
         // Invalidate the data stored in the last row, as it has been moved
         self.len -= 1;
     }
@@ -369,7 +369,7 @@ impl BlobVec {
     /// The type `T` must be the type of the items in this [`BlobVec`].
     pub unsafe fn get_slice<T>(&self) -> &[UnsafeCell<T>] {
         // SAFETY: the inner data will remain valid for as long as 'self.
-        std::slice::from_raw_parts(self.data.as_ptr() as *const UnsafeCell<T>, self.len)
+        core::slice::from_raw_parts(self.data.as_ptr() as *const UnsafeCell<T>, self.len)
     }
 
     /// Clears the vector, removing (and dropping) all values.

@@ -13,8 +13,11 @@ use crate::{
 };
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::Span;
+use core::{any::TypeId, borrow::Borrow, fmt, mem::MaybeUninit};
 use fixedbitset::FixedBitSet;
-use std::{any::TypeId, borrow::Borrow, fmt, mem::MaybeUninit};
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 use super::{
     NopWorldQuery, QueryComponentError, QueryData, QueryEntityError, QueryFilter, QueryManyIter,
@@ -130,8 +133,8 @@ impl<D: QueryData, F: QueryFilter> QueryState<D, F> {
             #[cfg(feature = "trace")]
             par_iter_span: bevy_utils::tracing::info_span!(
                 "par_for_each",
-                query = std::any::type_name::<D>(),
-                filter = std::any::type_name::<F>(),
+                query = core::any::type_name::<D>(),
+                filter = core::any::type_name::<F>(),
             ),
         };
         state.update_archetypes(world);
@@ -217,7 +220,7 @@ impl<D: QueryData, F: QueryFilter> QueryState<D, F> {
         self.validate_world(world.id());
         let archetypes = world.archetypes();
         let old_generation =
-            std::mem::replace(&mut self.archetype_generation, archetypes.generation());
+            core::mem::replace(&mut self.archetype_generation, archetypes.generation());
 
         for archetype in &archetypes[old_generation..] {
             self.new_archetype(archetype);
@@ -638,7 +641,7 @@ impl<D: QueryData, F: QueryFilter> QueryState<D, F> {
     ) -> Result<[ROQueryItem<'w, D>; N], QueryEntityError> {
         let mut values = [(); N].map(|_| MaybeUninit::uninit());
 
-        for (value, entity) in std::iter::zip(&mut values, entities) {
+        for (value, entity) in core::iter::zip(&mut values, entities) {
             // SAFETY: fetch is read-only
             // and world must be validated
             let item = self
@@ -679,7 +682,7 @@ impl<D: QueryData, F: QueryFilter> QueryState<D, F> {
 
         let mut values = [(); N].map(|_| MaybeUninit::uninit());
 
-        for (value, entity) in std::iter::zip(&mut values, entities) {
+        for (value, entity) in core::iter::zip(&mut values, entities) {
             let item = self.get_unchecked_manual(world, entity, last_run, this_run)?;
             *value = MaybeUninit::new(item);
         }
@@ -1297,8 +1300,8 @@ impl<D: QueryData, F: QueryFilter> QueryState<D, F> {
 
         match (first, extra) {
             (Some(r), false) => Ok(r),
-            (None, _) => Err(QuerySingleError::NoEntities(std::any::type_name::<Self>())),
-            (Some(_), _) => Err(QuerySingleError::MultipleEntities(std::any::type_name::<
+            (None, _) => Err(QuerySingleError::NoEntities(core::any::type_name::<Self>())),
+            (Some(_), _) => Err(QuerySingleError::MultipleEntities(core::any::type_name::<
                 Self,
             >())),
         }

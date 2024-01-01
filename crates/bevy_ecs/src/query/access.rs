@@ -1,8 +1,11 @@
 use crate::storage::SparseSetIndex;
 use bevy_utils::HashSet;
 use core::fmt;
+use core::marker::PhantomData;
 use fixedbitset::FixedBitSet;
-use std::marker::PhantomData;
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// A wrapper struct to make Debug representations of [`FixedBitSet`] easier
 /// to read, when used to store [`SparseSetIndex`].
@@ -582,8 +585,8 @@ impl<T: SparseSetIndex> Default for FilteredAccessSet<T> {
 mod tests {
     use crate::query::access::AccessFilters;
     use crate::query::{Access, FilteredAccess, FilteredAccessSet};
+    use core::marker::PhantomData;
     use fixedbitset::FixedBitSet;
-    use std::marker::PhantomData;
 
     #[test]
     fn read_all_access_conflicts() {

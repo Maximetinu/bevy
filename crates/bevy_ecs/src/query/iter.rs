@@ -637,8 +637,8 @@ impl<'w, 's, D: ReadOnlyQueryData, F: QueryFilter, const K: usize> FusedIterator
 }
 
 struct QueryIterationCursor<'w, 's, D: QueryData, F: QueryFilter> {
-    table_id_iter: std::slice::Iter<'s, TableId>,
-    archetype_id_iter: std::slice::Iter<'s, ArchetypeId>,
+    table_id_iter: core::slice::Iter<'s, TableId>,
+    archetype_id_iter: core::slice::Iter<'s, ArchetypeId>,
     table_entities: &'w [Entity],
     archetype_entities: &'w [ArchetypeEntity],
     fetch: D::Fetch<'w>,

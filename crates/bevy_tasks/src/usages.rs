@@ -1,5 +1,8 @@
 use super::TaskPool;
 use core::ops::Deref;
+#[cfg(not(feature = "std"))]
+use once_cell::sync::OnceCell as OnceLock;
+#[cfg(feature = "std")]
 use std::sync::OnceLock;
 
 macro_rules! taskpool {

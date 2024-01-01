@@ -2,8 +2,6 @@ use crate::TaskPool;
 
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
-#[cfg(feature = "std")]
-use std::vec::Vec;
 
 mod adapters;
 pub use adapters::*;

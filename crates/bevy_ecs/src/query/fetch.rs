@@ -197,7 +197,7 @@ use std::{cell::UnsafeCell, marker::PhantomData};
 /// }
 ///
 /// // This function statically checks that `T` implements `Debug`.
-/// fn assert_debug<T: std::fmt::Debug>() {}
+/// fn assert_debug<T: core::fmt::Debug>() {}
 ///
 /// assert_debug::<CustomQueryItem>();
 /// assert_debug::<CustomQueryReadOnlyItem>();
@@ -240,7 +240,7 @@ use std::{cell::UnsafeCell, marker::PhantomData};
 ///
 /// ```
 /// # use bevy_ecs::{prelude::*, query::QueryData};
-/// # use std::marker::PhantomData;
+/// # use core::marker::PhantomData;
 /// #[derive(QueryData)]
 /// pub struct GenericQuery<T> {
 ///     id: Entity,
@@ -623,7 +623,7 @@ unsafe impl<T: Component> WorldQuery for &T {
         assert!(
             !access.access().has_write(component_id),
             "&{} conflicts with a previous access in this query. Shared access cannot coincide with exclusive access.",
-                std::any::type_name::<T>(),
+                core::any::type_name::<T>(),
         );
         access.add_read(component_id);
     }
@@ -790,7 +790,7 @@ unsafe impl<'__w, T: Component> WorldQuery for Ref<'__w, T> {
         assert!(
             !access.access().has_write(component_id),
             "&{} conflicts with a previous access in this query. Shared access cannot coincide with exclusive access.",
-                std::any::type_name::<T>(),
+                core::any::type_name::<T>(),
         );
         access.add_read(component_id);
     }
@@ -957,7 +957,7 @@ unsafe impl<'__w, T: Component> WorldQuery for &'__w mut T {
         assert!(
             !access.access().has_read(component_id),
             "&mut {} conflicts with a previous access in this query. Mutable component access must be unique.",
-                std::any::type_name::<T>(),
+                core::any::type_name::<T>(),
         );
         access.add_write(component_id);
     }

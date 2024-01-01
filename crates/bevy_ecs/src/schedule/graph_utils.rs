@@ -1,4 +1,4 @@
-use std::fmt::Debug;
+use core::fmt::Debug;
 
 use bevy_utils::{
     petgraph::{algo::TarjanScc, graphmap::NodeTrait, prelude::*},
@@ -7,6 +7,9 @@ use bevy_utils::{
 use fixedbitset::FixedBitSet;
 
 use crate::schedule::set::*;
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// Unique identifier for a system or system set stored in a [`ScheduleGraph`].
 ///

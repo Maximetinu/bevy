@@ -10,8 +10,6 @@ use core::{
 
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
-#[cfg(feature = "std")]
-use std::vec::Vec;
 
 /// A point in space of any dimension that supports the math ops needed for cubic spline
 /// interpolation.

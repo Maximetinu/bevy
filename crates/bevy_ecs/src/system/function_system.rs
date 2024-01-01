@@ -35,7 +35,7 @@ pub struct SystemMeta {
 
 impl SystemMeta {
     pub(crate) fn new<T>() -> Self {
-        let name = std::any::type_name::<T>();
+        let name = core::any::type_name::<T>();
         Self {
             name: name.into(),
             archetype_component_access: Access::default(),
@@ -286,7 +286,7 @@ impl<Param: SystemParam> SystemState<Param> {
     pub fn update_archetypes_unsafe_world_cell(&mut self, world: UnsafeWorldCell) {
         let archetypes = world.archetypes();
         let old_generation =
-            std::mem::replace(&mut self.archetype_generation, archetypes.generation());
+            core::mem::replace(&mut self.archetype_generation, archetypes.generation());
 
         for archetype in &archetypes[old_generation..] {
             Param::new_archetype(&mut self.param_state, archetype, &mut self.meta);
@@ -523,7 +523,7 @@ where
         assert_eq!(self.world_id, Some(world.id()), "Encountered a mismatched World. A System cannot be used with Worlds other than the one it was initialized with.");
         let archetypes = world.archetypes();
         let old_generation =
-            std::mem::replace(&mut self.archetype_generation, archetypes.generation());
+            core::mem::replace(&mut self.archetype_generation, archetypes.generation());
 
         for archetype in &archetypes[old_generation..] {
             let param_state = self.param_state.as_mut().unwrap();

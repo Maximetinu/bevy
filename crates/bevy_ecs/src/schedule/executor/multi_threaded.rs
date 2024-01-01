@@ -1,4 +1,4 @@
-use std::{
+use core::{
     any::Any,
     sync::{Arc, Mutex},
 };
@@ -21,6 +21,9 @@ use crate::{
     system::BoxedSystem,
     world::{unsafe_world_cell::UnsafeWorldCell, World},
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 use crate as bevy_ecs;
 
@@ -310,7 +313,7 @@ impl MultiThreadedExecutor {
         }
 
         // can't borrow since loop mutably borrows `self`
-        let mut ready_systems = std::mem::take(&mut self.ready_systems_copy);
+        let mut ready_systems = core::mem::take(&mut self.ready_systems_copy);
         ready_systems.clear();
         ready_systems.union_with(&self.ready_systems);
 

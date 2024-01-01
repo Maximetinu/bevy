@@ -142,8 +142,8 @@ where
         self.name.clone()
     }
 
-    fn type_id(&self) -> std::any::TypeId {
-        std::any::TypeId::of::<Self>()
+    fn type_id(&self) -> core::any::TypeId {
+        core::any::TypeId::of::<Self>()
     }
 
     fn component_access(&self) -> &Access<ComponentId> {
@@ -183,7 +183,7 @@ where
     fn run<'w>(&mut self, input: Self::In, world: &'w mut World) -> Self::Out {
         // SAFETY: Converting `&mut T` -> `&UnsafeCell<T>`
         // is explicitly allowed in the docs for `UnsafeCell`.
-        let world: &'w UnsafeCell<World> = unsafe { std::mem::transmute(world) };
+        let world: &'w UnsafeCell<World> = unsafe { core::mem::transmute(world) };
         Func::combine(
             input,
             // SAFETY: Since these closures are `!Send + !Sync + !'static`, they can never

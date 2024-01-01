@@ -6,6 +6,9 @@ use crate::{
 use bevy_reflect::FromType;
 use bevy_utils::EntityHashMap;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// For a specific type of component, this maps any fields with values of type [`Entity`] to a new world.
 /// Since a given `Entity` ID is only valid for the world it came from, when performing deserialization
 /// any stored IDs need to be re-allocated in the destination world.

@@ -1,6 +1,6 @@
 //! Types that enable reflection support.
 
-use std::ops::{Deref, DerefMut};
+use core::ops::{Deref, DerefMut};
 
 use crate as bevy_ecs;
 use crate::{entity::Entity, system::Resource};

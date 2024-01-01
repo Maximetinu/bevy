@@ -25,10 +25,13 @@ use crate::{
     entity::{Entity, EntityLocation},
     storage::{ImmutableSparseSet, SparseArray, SparseSet, SparseSetIndex, TableId, TableRow},
 };
-use std::{
+use core::{
     hash::Hash,
     ops::{Index, IndexMut, RangeFrom},
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// An opaque location within a [`Archetype`].
 ///

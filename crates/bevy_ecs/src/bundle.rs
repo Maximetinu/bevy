@@ -18,7 +18,10 @@ use crate::{
 };
 use bevy_ptr::OwningPtr;
 use bevy_utils::all_tuples;
-use std::any::TypeId;
+use core::any::TypeId;
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// The `Bundle` trait enables insertion and removal of [`Component`]s from an entity.
 ///
@@ -92,7 +95,7 @@ use std::any::TypeId;
 ///
 /// If you want to add `PhantomData` to your `Bundle` you have to mark it with `#[bundle(ignore)]`.
 /// ```
-/// # use std::marker::PhantomData;
+/// # use core::marker::PhantomData;
 /// use bevy_ecs::{component::Component, bundle::Bundle};
 ///
 /// #[derive(Component)]
@@ -837,7 +840,7 @@ impl Bundles {
                 // - info was created
                 // - appropriate storage for it has been initialized.
                 // - was created in the same order as the components in T
-                unsafe { BundleInfo::new(std::any::type_name::<T>(), components, component_ids, id) };
+                unsafe { BundleInfo::new(core::any::type_name::<T>(), components, component_ids, id) };
             bundle_infos.push(bundle_info);
             id
         });

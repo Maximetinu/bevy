@@ -25,11 +25,14 @@ use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 use bevy_utils::{Duration, HashSet, Instant, Uuid};
-use std::borrow::Cow;
-use std::ffi::OsString;
-use std::marker::PhantomData;
-use std::ops::Range;
-use std::path::{Path, PathBuf};
+use core::ffi::OsString;
+use core::marker::PhantomData;
+use core::ops::Range;
+#[cfg(feature = "std")]
+use std::{
+    borrow::Cow,
+    path::{Path, PathBuf},
+};
 
 #[cfg(not(target_arch = "wasm32"))]
 #[cfg(not(target_arch = "wasm32"))]
@@ -53,17 +56,18 @@ fn register_rust_types(app: &mut App) {
         .register_type_data::<Range<f32>, ReflectSerialize>()
         .register_type_data::<Range<f32>, ReflectDeserialize>()
         .register_type::<String>()
-        .register_type::<PathBuf>()
         .register_type::<OsString>()
         .register_type::<HashSet<String>>()
         .register_type::<Option<String>>()
         .register_type::<Option<bool>>()
         .register_type::<Option<f64>>()
-        .register_type::<Cow<'static, str>>()
-        .register_type::<Cow<'static, Path>>()
         .register_type::<Duration>()
         .register_type::<Instant>()
         .register_type::<Uuid>();
+    #[cfg(feature = "std")]
+    app.register_type::<PathBuf>()
+        .register_type::<Cow<'static, str>>()
+        .register_type::<Cow<'static, Path>>()
 }
 
 fn register_math_types(app: &mut App) {

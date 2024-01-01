@@ -4,8 +4,8 @@ use crate as bevy_ecs;
 use crate::system::{Local, Res, ResMut, Resource, SystemParam};
 pub use bevy_ecs_macros::Event;
 use bevy_utils::detailed_trace;
-use std::ops::{Deref, DerefMut};
-use std::{
+use core::ops::{Deref, DerefMut};
+use core::{
     cmp::Ordering,
     fmt,
     hash::{Hash, Hasher},
@@ -13,6 +13,10 @@ use std::{
     marker::PhantomData,
     slice::Iter,
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// A type that can be stored in an [`Events<E>`] resource
 /// You can conveniently access events using the [`EventReader`] and [`EventWriter`] system parameter.
 ///
@@ -50,7 +54,7 @@ impl<E: Event> fmt::Debug for EventId<E> {
         write!(
             f,
             "event<{}>#{}",
-            std::any::type_name::<E>().split("::").last().unwrap(),
+            core::any::type_name::<E>().split("::").last().unwrap(),
             self.id,
         )
     }
@@ -259,7 +263,7 @@ impl<E: Event> Events<E> {
     /// If you do not need to take ownership of the removed events, use [`Events::update`] instead.
     #[must_use = "If you do not need the returned events, call .update() instead."]
     pub fn update_drain(&mut self) -> impl Iterator<Item = E> + '_ {
-        std::mem::swap(&mut self.events_a, &mut self.events_b);
+        core::mem::swap(&mut self.events_a, &mut self.events_b);
         let iter = self.events_b.events.drain(..);
         self.events_b.start_event_count = self.event_count;
         debug_assert_eq!(
@@ -766,7 +770,7 @@ pub fn event_update_system<T: Event>(
     if let Some(mut s) = signal {
         // If we haven't got a signal to update the events, but we *could* get such a signal
         // return early and update the events later.
-        if !std::mem::replace(&mut s.0, false) {
+        if !core::mem::replace(&mut s.0, false) {
             return;
         }
     }

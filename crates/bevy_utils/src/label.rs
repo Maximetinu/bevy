@@ -117,7 +117,11 @@ macro_rules! define_label {
             /// Clones this `
             #[doc = stringify!($label_trait_name)]
             ///`.
-            fn dyn_clone(&self) -> ::core::boxed::Box<dyn $label_trait_name>;
+            #[cfg(feature = "std")]
+            fn dyn_clone(&self) -> ::std::boxed::Box<dyn $label_trait_name>;
+
+            #[cfg(not(feature = "std"))]
+            fn dyn_clone(&self) -> ::alloc::boxed::Box<dyn $label_trait_name>;
 
             /// Casts this value to a form where it can be compared with other type-erased values.
             fn as_dyn_eq(&self) -> &dyn $crate::label::DynEq;

@@ -21,10 +21,10 @@ use crate::{schedule::InternedSystemSet, world::unsafe_world_cell::UnsafeWorldCe
 /// impl<S> Adapt<S> for NotMarker
 /// where
 ///     S: System,
-///     S::Out: std::ops::Not,
+///     S::Out: core::ops::Not,
 /// {
 ///     type In = S::In;
-///     type Out = <S::Out as std::ops::Not>::Output;
+///     type Out = <S::Out as core::ops::Not>::Output;
 ///
 ///     fn adapt(
 ///         &mut self,
@@ -81,8 +81,8 @@ where
         self.name.clone()
     }
 
-    fn type_id(&self) -> std::any::TypeId {
-        std::any::TypeId::of::<Self>()
+    fn type_id(&self) -> core::any::TypeId {
+        core::any::TypeId::of::<Self>()
     }
 
     fn component_access(&self) -> &crate::query::Access<crate::component::ComponentId> {

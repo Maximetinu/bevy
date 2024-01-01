@@ -1,7 +1,7 @@
-use std::any::TypeId;
-use std::fmt::Debug;
-use std::hash::{Hash, Hasher};
-use std::marker::PhantomData;
+use core::any::TypeId;
+use core::fmt::Debug;
+use core::hash::{Hash, Hasher};
+use core::marker::PhantomData;
 
 pub use bevy_ecs_macros::{ScheduleLabel, SystemSet};
 use bevy_utils::define_label;
@@ -64,9 +64,9 @@ impl<T: 'static> SystemTypeSet<T> {
 }
 
 impl<T> Debug for SystemTypeSet<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_tuple("SystemTypeSet")
-            .field(&format_args!("fn {}()", &std::any::type_name::<T>()))
+            .field(&format_args!("fn {}()", &core::any::type_name::<T>()))
             .finish()
     }
 }

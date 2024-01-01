@@ -14,6 +14,9 @@ use crate::{
     world::World,
 };
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// Types that can run a [`SystemSchedule`] on a [`World`].
 pub(super) trait SystemExecutor: Send + Sync {
     fn kind(&self) -> ExecutorKind;
@@ -99,7 +102,7 @@ pub fn apply_deferred(world: &mut World) {}
 
 /// Returns `true` if the [`System`](crate::system::System) is an instance of [`apply_deferred`].
 pub(super) fn is_apply_deferred(system: &BoxedSystem) -> bool {
-    use std::any::Any;
+    use core::any::Any;
     // deref to use `System::type_id` instead of `Any::type_id`
     system.as_ref().type_id() == apply_deferred.type_id()
 }

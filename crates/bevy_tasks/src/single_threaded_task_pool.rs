@@ -1,20 +1,25 @@
 use core::{cell::RefCell, future::Future, marker::PhantomData, mem};
-use std::rc::Rc;
-use std::sync::Arc;
+
+#[cfg(feature = "rclite")]
+use rclite::{Arc, Rc};
+#[cfg(not(feature = "rclite"))]
+use std::{rc::Rc, sync::Arc};
 
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
-#[cfg(feature = "std")]
-use std::vec::Vec;
 
 #[cfg(not(feature = "std"))]
 use alloc::string::String;
-#[cfg(feature = "std")]
-use std::string::String;
 
+#[cfg(feature = "std")]
 thread_local! {
     static LOCAL_EXECUTOR: async_executor::LocalExecutor<'static> = async_executor::LocalExecutor::new();
 }
+
+#[cfg(feature = "thread_local_exp")]
+#[thread_local]
+static LOCAL_EXECUTOR: async_executor::LocalExecutor<'static> =
+    async_executor::LocalExecutor::new();
 
 /// Used to create a [`TaskPool`].
 #[derive(Debug, Default, Clone)]
@@ -158,13 +163,22 @@ impl TaskPool {
             future.await;
         });
 
-        #[cfg(not(target_arch = "wasm32"))]
+        #[cfg(all(not(target_arch = "wasm32"), not(feature = "thread_local_exp")))]
         {
             LOCAL_EXECUTOR.with(|executor| {
                 let _task = executor.spawn(future);
                 // Loop until all tasks are done
                 while executor.try_tick() {}
             });
+        }
+
+        #[cfg(feature = "thread_local_exp")]
+        {
+            unsafe {
+                let _task = LOCAL_EXECUTOR.spawn(future);
+                // Loop until all tasks are done
+                while LOCAL_EXECUTOR.try_tick() {}
+            }
         }
 
         FakeTask
@@ -189,11 +203,20 @@ impl TaskPool {
     ///     local_executor.try_tick();
     /// });
     /// ```
+    #[cfg(not(feature = "thread_local_exp"))]
     pub fn with_local_executor<F, R>(&self, f: F) -> R
     where
         F: FnOnce(&async_executor::LocalExecutor) -> R,
     {
         LOCAL_EXECUTOR.with(f)
+    }
+
+    #[cfg(feature = "thread_local_exp")]
+    pub fn with_local_executor<F, R>(&self, f: F) -> R
+    where
+        F: FnOnce(&async_executor::LocalExecutor) -> R,
+    {
+        unsafe { f(&LOCAL_EXECUTOR) }
     }
 }
 

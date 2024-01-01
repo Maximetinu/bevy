@@ -1,4 +1,4 @@
-use std::mem::MaybeUninit;
+use core::mem::MaybeUninit;
 
 use bevy_ptr::{OwningPtr, Unaligned};
 
@@ -66,14 +66,14 @@ impl CommandQueue {
                     // ...or discard it.
                     None => drop(command),
                 }
-                std::mem::size_of::<C>()
+                core::mem::size_of::<C>()
             },
         };
 
         let old_len = self.bytes.len();
 
         // Reserve enough bytes for both the metadata and the command itself.
-        self.bytes.reserve(std::mem::size_of::<Packed<C>>());
+        self.bytes.reserve(core::mem::size_of::<Packed<C>>());
 
         // Pointer to the bytes at the end of the buffer.
         // SAFETY: We know it is within bounds of the allocation, due to the call to `.reserve()`.
@@ -94,7 +94,7 @@ impl CommandQueue {
         // due to the call to `.reserve()` above.
         unsafe {
             self.bytes
-                .set_len(old_len + std::mem::size_of::<Packed<C>>());
+                .set_len(old_len + core::mem::size_of::<Packed<C>>());
         }
     }
 
@@ -132,13 +132,13 @@ impl CommandQueue {
             // SAFETY: For most types of `Command`, the pointer immediately following the metadata
             // is guaranteed to be in bounds. If the command is a zero-sized type (ZST), then the cursor
             // might be 1 byte past the end of the buffer, which is safe.
-            cursor = unsafe { cursor.add(std::mem::size_of::<CommandMeta>()) };
+            cursor = unsafe { cursor.add(core::mem::size_of::<CommandMeta>()) };
             // Construct an owned pointer to the command.
             // SAFETY: It is safe to transfer ownership out of `self.bytes`, since the call to `set_len(0)` above
             // guarantees that nothing stored in the buffer will get observed after this function ends.
             // `cmd` points to a valid address of a stored command, so it must be non-null.
             let cmd = unsafe {
-                OwningPtr::<Unaligned>::new(std::ptr::NonNull::new_unchecked(cursor.cast()))
+                OwningPtr::<Unaligned>::new(core::ptr::NonNull::new_unchecked(cursor.cast()))
             };
             // SAFETY: The data underneath the cursor must correspond to the type erased in metadata,
             // since they were stored next to each other by `.push()`.
