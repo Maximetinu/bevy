@@ -170,6 +170,7 @@ no_std = [
   "bevy_tasks/thread_local_exp",
   "bevy_utils/once_cell",
   "bevy_ecs/rclite",
+  "bevy_time/thingbuf",
 ]
 
 [dependencies]

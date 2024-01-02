@@ -47,9 +47,11 @@ pub struct HierarchyPlugin;
 use bevy_utils::smallvec::SmallVec;
 impl Plugin for HierarchyPlugin {
     fn build(&self, app: &mut App) {
+        app.add_event::<HierarchyEvent>();
+
+        #[cfg(feature = "bevy_reflect")]
         app.register_type::<Children>()
             .register_type::<Parent>()
-            .register_type::<SmallVec<[bevy_ecs::entity::Entity; 8]>>()
-            .add_event::<HierarchyEvent>();
+            .register_type::<SmallVec<[bevy_ecs::entity::Entity; 8]>>();
     }
 }

@@ -6,6 +6,9 @@ use bevy_ecs::prelude::*;
 #[cfg(feature = "bevy_app")]
 use bevy_utils::{get_short_name, HashSet};
 
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::ToOwned, format};
+
 /// When enabled, runs [`check_hierarchy_component_has_valid_parent<T>`].
 ///
 /// This resource is added by [`ValidParentCheckPlugin<T>`].
@@ -64,7 +67,7 @@ pub fn check_hierarchy_component_has_valid_parent<T: Component>(
         let parent = parent.get();
         if !component_query.contains(parent) && !already_diagnosed.contains(&entity) {
             already_diagnosed.insert(entity);
-            bevy_log::warn!(
+            bevy_utils::tracing::warn!(
                 "warning[B0004]: {name} with the {ty_name} component has a parent without {ty_name}.\n\
                 This will cause inconsistent behaviors! See https://bevyengine.org/learn/errors/#b0004",
                 ty_name = get_short_name(core::any::type_name::<T>()),

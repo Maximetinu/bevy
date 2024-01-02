@@ -13,7 +13,10 @@ use core::{
     ops::{Deref, DerefMut},
 };
 
+#[cfg(not(feature = "std"))]
 use rclite::Rc;
+#[cfg(feature = "std")]
+use std::rc::Rc;
 
 use super::unsafe_world_cell::UnsafeWorldCell;
 

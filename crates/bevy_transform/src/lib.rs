@@ -2,6 +2,9 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 pub mod commands;
 /// The basic components of the transform crate
 pub mod components;
@@ -99,9 +102,7 @@ impl Plugin for TransformPlugin {
         #[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
         struct PropagateTransformsSet;
 
-        app.register_type::<Transform>()
-            .register_type::<GlobalTransform>()
-            .add_plugins(ValidParentCheckPlugin::<GlobalTransform>::default())
+        app.add_plugins(ValidParentCheckPlugin::<GlobalTransform>::default())
             .configure_sets(
                 PostStartup,
                 PropagateTransformsSet.in_set(TransformSystem::TransformPropagate),
@@ -132,6 +133,10 @@ impl Plugin for TransformPlugin {
                     propagate_transforms.in_set(PropagateTransformsSet),
                 ),
             );
+
+        #[cfg(feature = "bevy_reflect")]
+        app.register_type::<Transform>()
+            .register_type::<GlobalTransform>();
     }
 }
 

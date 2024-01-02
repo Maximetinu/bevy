@@ -34,10 +34,6 @@ pub mod uuid;
 mod cow_arc;
 mod default;
 mod float_ord;
-#[cfg(feature = "std")]
-mod intern;
-#[cfg(not(feature = "std"))]
-pub mod intern_no_std;
 
 pub use crate::uuid::Uuid;
 pub use ahash::{AHasher, RandomState};
@@ -54,7 +50,9 @@ pub use tracing;
 pub use web_time::{Duration, Instant, SystemTime, SystemTimeError, TryFromFloatSecsError};
 
 #[cfg(feature = "std")]
-pub use intern;
+pub mod intern;
+#[cfg(not(feature = "std"))]
+pub mod intern_no_std;
 #[cfg(not(feature = "std"))]
 pub use intern_no_std as intern;
 

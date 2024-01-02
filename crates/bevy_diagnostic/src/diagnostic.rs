@@ -1,7 +1,12 @@
 use bevy_app::App;
 use bevy_ecs::system::{Deferred, Res, Resource, SystemBuffer, SystemParam};
+#[cfg(feature = "std")]
 use bevy_log::warn;
 use bevy_utils::{Duration, Instant, StableHashMap, Uuid};
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, collections::VecDeque};
+#[cfg(feature = "std")]
 use std::{borrow::Cow, collections::VecDeque};
 
 use crate::MAX_DIAGNOSTIC_NAME_WIDTH;
@@ -80,6 +85,7 @@ impl Diagnostic {
         let name = name.into();
         if name.chars().count() > MAX_DIAGNOSTIC_NAME_WIDTH {
             // This could be a false positive due to a unicode width being shorter
+            #[cfg(feature = "std")]
             warn!(
                 "Diagnostic {:?} has name longer than {} characters, and so might overflow in the LogDiagnosticsPlugin\
                 Consider using a shorter name.",

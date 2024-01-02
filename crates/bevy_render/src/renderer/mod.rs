@@ -88,7 +88,7 @@ pub fn render_system(world: &mut World) {
 
     // update the time and send it to the app world
     let time_sender = world.resource::<TimeSender>();
-    if let Err(error) = time_sender.0.try_send(Instant::now()) {
+    if let Err(error) = time_sender.0.try_send(Some(Instant::now())) {
         match error {
             bevy_time::TrySendError::Full(_) => {
                 panic!("The TimeSender channel should always be empty during render. You might need to add the bevy::core::time_system to your app.",);

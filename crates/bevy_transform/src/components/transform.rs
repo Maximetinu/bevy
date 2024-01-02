@@ -1,8 +1,10 @@
 use super::GlobalTransform;
-use bevy_ecs::{component::Component, reflect::ReflectComponent};
+use bevy_ecs::component::Component;
+#[cfg(feature = "bevy_reflect")]
+use bevy_ecs::reflect::ReflectComponent;
 use bevy_math::{Affine3A, Mat3, Mat4, Quat, Vec3};
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::prelude::*;
-use bevy_reflect::Reflect;
 use core::ops::Mul;
 
 /// Describe the position of an entity. If the entity has a parent, the position is relative
@@ -34,9 +36,10 @@ use core::ops::Mul;
 ///
 /// [`global_vs_local_translation`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/global_vs_local_translation.rs
 /// [`transform`]: https://github.com/bevyengine/bevy/blob/latest/examples/transforms/transform.rs
-#[derive(Component, Debug, PartialEq, Clone, Copy, Reflect)]
+#[derive(Component, Debug, PartialEq, Clone, Copy)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Component, Default, PartialEq))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]
-#[reflect(Component, Default, PartialEq)]
 pub struct Transform {
     /// Position of the entity. In 2d, the last value of the `Vec3` is used for z-ordering.
     ///

@@ -2,14 +2,19 @@
 mod diagnostic;
 mod entity_count_diagnostics_plugin;
 mod frame_time_diagnostics_plugin;
+#[cfg(feature = "std")]
 mod log_diagnostics_plugin;
 #[cfg(feature = "std")]
 mod system_information_diagnostics_plugin;
+
+#[cfg(not(feature = "std"))]
+extern crate alloc;
 
 use bevy_app::prelude::*;
 pub use diagnostic::*;
 pub use entity_count_diagnostics_plugin::EntityCountDiagnosticsPlugin;
 pub use frame_time_diagnostics_plugin::FrameTimeDiagnosticsPlugin;
+#[cfg(feature = "std")]
 pub use log_diagnostics_plugin::LogDiagnosticsPlugin;
 #[cfg(feature = "std")]
 pub use system_information_diagnostics_plugin::SystemInformationDiagnosticsPlugin;

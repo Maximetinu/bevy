@@ -8,6 +8,9 @@ use bevy_ecs::{
 };
 use bevy_hierarchy::{Children, Parent};
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 /// Update [`GlobalTransform`] component of entities that aren't in the hierarchy
 ///
 /// Third party plugins should ensure that this is used in concert with [`propagate_transforms`].

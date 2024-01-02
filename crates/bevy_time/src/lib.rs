@@ -32,8 +32,13 @@ use bevy_app::{prelude::*, RunFixedMainLoop};
 use bevy_ecs::event::{event_queue_update_system, EventUpdateSignal};
 use bevy_ecs::prelude::*;
 use bevy_utils::{tracing::warn, Duration, Instant};
+#[cfg(feature = "crossbeam-channel")]
 pub use crossbeam_channel::TrySendError;
+#[cfg(feature = "crossbeam-channel")]
 use crossbeam_channel::{Receiver, Sender};
+
+#[cfg(feature = "thingbuf")]
+use thingbuf::mpsc::{errors::TrySendError, Receiver, Sender};
 
 /// Adds time functionality to Apps.
 #[derive(Default)]
@@ -51,17 +56,19 @@ impl Plugin for TimePlugin {
             .init_resource::<Time<Virtual>>()
             .init_resource::<Time<Fixed>>()
             .init_resource::<TimeUpdateStrategy>()
-            .register_type::<Time>()
-            .register_type::<Time<Real>>()
-            .register_type::<Time<Virtual>>()
-            .register_type::<Time<Fixed>>()
-            .register_type::<Timer>()
-            .register_type::<Stopwatch>()
             .add_systems(
                 First,
                 (time_system, virtual_time_system.after(time_system)).in_set(TimeSystem),
             )
             .add_systems(RunFixedMainLoop, run_fixed_main_schedule);
+
+        #[cfg(feature = "bevy_reflect")]
+        app.register_type::<Time>()
+            .register_type::<Time<Real>>()
+            .register_type::<Time<Virtual>>()
+            .register_type::<Time<Fixed>>()
+            .register_type::<Timer>()
+            .register_type::<Stopwatch>();
 
         // ensure the events are not dropped until `FixedMain` systems can observe them
         app.init_resource::<EventUpdateSignal>()
@@ -103,17 +110,20 @@ pub enum TimeUpdateStrategy {
 
 /// Channel resource used to receive time from the render world.
 #[derive(Resource)]
-pub struct TimeReceiver(pub Receiver<Instant>);
+pub struct TimeReceiver(pub Receiver<Option<Instant>>);
 
 /// Channel resource used to send time from the render world.
 #[derive(Resource)]
-pub struct TimeSender(pub Sender<Instant>);
+pub struct TimeSender(pub Sender<Option<Instant>>);
 
 /// Creates channels used for sending time between the render world and the main world.
 pub fn create_time_channels() -> (TimeSender, TimeReceiver) {
     // bound the channel to 2 since when pipelined the render phase can finish before
     // the time system runs.
-    let (s, r) = crossbeam_channel::bounded::<Instant>(2);
+    #[cfg(feature = "crossbeam-channel")]
+    let (s, r) = crossbeam_channel::bounded::<Option<Instant>>(2);
+    #[cfg(feature = "thingbuf")]
+    let (s, r) = thingbuf::mpsc::channel::<Option<Instant>>(2);
     (TimeSender(s), TimeReceiver(r))
 }
 
@@ -127,7 +137,7 @@ fn time_system(
 ) {
     let new_time = if let Some(time_recv) = time_recv {
         // TODO: Figure out how to handle this when using pipelined rendering.
-        if let Ok(new_time) = time_recv.0.try_recv() {
+        if let Ok(Some(new_time)) = time_recv.0.try_recv() {
             *has_received_time = true;
             new_time
         } else {

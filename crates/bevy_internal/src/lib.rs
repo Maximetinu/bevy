@@ -43,6 +43,7 @@ pub mod input {
     pub use bevy_input::*;
 }
 
+#[cfg(feature = "bevy_log")]
 pub mod log {
     //! Logging capabilities
     pub use bevy_log::*;
@@ -58,6 +59,7 @@ pub mod ptr {
     pub use bevy_ptr::*;
 }
 
+#[cfg(feature = "bevy_reflect")]
 pub mod reflect {
     //! Type reflection used for dynamically interacting with rust types.
     pub use bevy_reflect::*;
