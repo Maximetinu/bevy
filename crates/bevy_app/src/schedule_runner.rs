@@ -85,6 +85,11 @@ impl Plugin for ScheduleRunnerPlugin {
             let mut app_exit_event_reader = ManualEventReader::<AppExit>::default();
             match run_mode {
                 RunMode::Once => app.update(),
+                #[cfg(not(any(feature = "std", target_arch = "wasm32")))]
+                RunMode::Loop { wait } => {
+                    panic!("Loop mode is not supported on this platform")
+                }
+                #[cfg(any(feature = "std", target_arch = "wasm32"))]
                 RunMode::Loop { wait } => {
                     let mut tick = move |app: &mut App,
                                          wait: Option<Duration>|

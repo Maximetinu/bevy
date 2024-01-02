@@ -16,6 +16,9 @@ use core::marker::PhantomData;
 #[cfg(feature = "std")]
 pub use parallel_scope::*;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 use super::{Deferred, Resource, SystemBuffer, SystemMeta};
 
 /// A [`World`] mutation.

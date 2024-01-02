@@ -34,8 +34,12 @@ pub mod prelude {
     };
 }
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
 use keyboard::{keyboard_input_system, KeyCode, KeyboardInput};
 use mouse::{
@@ -110,47 +114,51 @@ impl Plugin for InputPlugin {
             .init_resource::<Touches>()
             .add_systems(PreUpdate, touch_screen_input_system.in_set(InputSystem));
 
-        // Register common types
-        app.register_type::<ButtonState>();
+        #[cfg(feature = "bevy_reflect")]
+        {
+            // Register common types
+            app.register_type::<ButtonState>();
 
-        // Register keyboard types
-        app.register_type::<KeyboardInput>()
-            .register_type::<KeyCode>();
+            // Register keyboard types
+            app.register_type::<KeyboardInput>()
+                .register_type::<KeyCode>();
 
-        // Register mouse types
-        app.register_type::<MouseButtonInput>()
-            .register_type::<MouseButton>()
-            .register_type::<MouseMotion>()
-            .register_type::<MouseScrollUnit>()
-            .register_type::<MouseWheel>();
+            // Register mouse types
+            app.register_type::<MouseButtonInput>()
+                .register_type::<MouseButton>()
+                .register_type::<MouseMotion>()
+                .register_type::<MouseScrollUnit>()
+                .register_type::<MouseWheel>();
 
-        // Register touchpad types
-        app.register_type::<TouchpadMagnify>()
-            .register_type::<TouchpadRotate>();
+            // Register touchpad types
+            app.register_type::<TouchpadMagnify>()
+                .register_type::<TouchpadRotate>();
 
-        // Register touch types
-        app.register_type::<TouchInput>()
-            .register_type::<ForceTouch>()
-            .register_type::<TouchPhase>();
+            // Register touch types
+            app.register_type::<TouchInput>()
+                .register_type::<ForceTouch>()
+                .register_type::<TouchPhase>();
 
-        // Register gamepad types
-        app.register_type::<Gamepad>()
-            .register_type::<GamepadConnection>()
-            .register_type::<GamepadButtonType>()
-            .register_type::<GamepadButton>()
-            .register_type::<GamepadButtonInput>()
-            .register_type::<GamepadAxisType>()
-            .register_type::<GamepadAxis>()
-            .register_type::<GamepadSettings>()
-            .register_type::<ButtonSettings>()
-            .register_type::<AxisSettings>()
-            .register_type::<ButtonAxisSettings>();
+            // Register gamepad types
+            app.register_type::<Gamepad>()
+                .register_type::<GamepadConnection>()
+                .register_type::<GamepadButtonType>()
+                .register_type::<GamepadButton>()
+                .register_type::<GamepadButtonInput>()
+                .register_type::<GamepadAxisType>()
+                .register_type::<GamepadAxis>()
+                .register_type::<GamepadSettings>()
+                .register_type::<ButtonSettings>()
+                .register_type::<AxisSettings>()
+                .register_type::<ButtonAxisSettings>();
+        }
     }
 }
 
 /// The current "press" state of an element
-#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Reflect)]
-#[reflect(Debug, Hash, PartialEq)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, Hash, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),

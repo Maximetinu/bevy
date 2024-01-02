@@ -31,7 +31,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// An opaque location within a [`Archetype`].
 ///

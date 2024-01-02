@@ -7,9 +7,6 @@
 use core::{fmt::Debug, hash::Hash, ops::Deref};
 use std::sync::{OnceLock, PoisonError, RwLock};
 
-#[cfg(not(feature = "std"))]
-use alloc::boxed::Box;
-
 use crate::HashSet;
 
 /// An interned value. Will stay valid until the end of the program and will not drop.

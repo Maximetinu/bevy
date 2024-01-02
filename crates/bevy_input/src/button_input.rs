@@ -1,6 +1,7 @@
 //! The generic input type.
 
 use bevy_ecs::system::Resource;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::{std_traits::ReflectDefault, Reflect};
 use bevy_utils::HashSet;
 use core::hash::Hash;
@@ -43,8 +44,9 @@ use bevy_ecs::schedule::State;
 ///
 ///[`ResMut`]: bevy_ecs::system::ResMut
 ///[`DetectChangesMut::bypass_change_detection`]: bevy_ecs::change_detection::DetectChangesMut::bypass_change_detection
-#[derive(Debug, Clone, Resource, Reflect)]
-#[reflect(Default)]
+#[derive(Debug, Clone, Resource)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Default))]
 pub struct ButtonInput<T: Copy + Eq + Hash + Send + Sync + 'static> {
     /// A collection of every button that is currently being pressed.
     pressed: HashSet<T>,

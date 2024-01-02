@@ -3,6 +3,9 @@
 
 //! This crate provides core functionality for Bevy Engine.
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 mod name;
 #[cfg(feature = "serialize")]
 mod serde;
@@ -23,11 +26,13 @@ pub mod prelude {
 
 use bevy_app::prelude::*;
 use bevy_ecs::prelude::*;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 use bevy_utils::{Duration, HashSet, Instant, Uuid};
-use core::ffi::OsString;
 use core::marker::PhantomData;
 use core::ops::Range;
+#[cfg(feature = "bevy_reflect")]
+use std::ffi::OsString;
 #[cfg(feature = "std")]
 use std::{
     borrow::Cow,
@@ -44,13 +49,17 @@ pub struct TypeRegistrationPlugin;
 
 impl Plugin for TypeRegistrationPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Entity>().register_type::<Name>();
+        #[cfg(feature = "bevy_reflect")]
+        {
+            app.register_type::<Entity>().register_type::<Name>();
 
-        register_rust_types(app);
-        register_math_types(app);
+            register_rust_types(app);
+            register_math_types(app);
+        }
     }
 }
 
+#[cfg(feature = "bevy_reflect")]
 fn register_rust_types(app: &mut App) {
     app.register_type::<Range<f32>>()
         .register_type_data::<Range<f32>, ReflectSerialize>()
@@ -70,6 +79,7 @@ fn register_rust_types(app: &mut App) {
         .register_type::<Cow<'static, Path>>()
 }
 
+#[cfg(feature = "bevy_reflect")]
 fn register_math_types(app: &mut App) {
     app.register_type::<bevy_math::IVec2>()
         .register_type::<bevy_math::IVec3>()

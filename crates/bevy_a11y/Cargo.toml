@@ -17,6 +17,7 @@ std = ["bevy_app/std", "bevy_ecs/std"]
 bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
 bevy_derive = { path = "../bevy_derive", default-features = false, version = "0.12.0" }
 bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0" }
+rclite = { version = "0.2.4", optional = true }
 
 accesskit = "0.12"
 

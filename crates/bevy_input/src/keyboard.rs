@@ -72,6 +72,7 @@ use bevy_ecs::{
     event::{Event, EventReader},
     system::ResMut,
 };
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
 
 #[cfg(feature = "serialize")]
@@ -86,8 +87,9 @@ use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 ///
 /// The event is consumed inside of the [`keyboard_input_system`]
 /// to update the [`Input<KeyCode>`](ButtonInput<KeyCode>) resource.
-#[derive(Event, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -136,7 +138,8 @@ pub fn keyboard_input_system(
 ///
 /// - Correctly match key press and release events.
 /// - On non-web platforms, support assigning keybinds to virtually any key through a UI.
-#[derive(Debug, Clone, Ord, PartialOrd, Copy, PartialEq, Eq, Hash, Reflect)]
+#[derive(Debug, Clone, Ord, PartialOrd, Copy, PartialEq, Eq, Hash)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -173,8 +176,9 @@ pub enum NativeKeyCode {
 /// ## Updating
 ///
 /// The resource is updated inside of the [`keyboard_input_system`].
-#[derive(Debug, Hash, Ord, PartialOrd, PartialEq, Eq, Clone, Copy, Reflect)]
-#[reflect(Debug, Hash, PartialEq)]
+#[derive(Debug, Hash, Ord, PartialOrd, PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, Hash, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),

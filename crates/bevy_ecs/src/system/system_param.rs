@@ -24,7 +24,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::borrow::Cow;
+use alloc::{borrow::Cow, borrow::ToOwned, vec::Vec};
 #[cfg(feature = "std")]
 use std::borrow::Cow;
 

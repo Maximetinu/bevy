@@ -25,7 +25,7 @@ use crate::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// Types that can run a [`SystemSchedule`] on a [`World`].
 pub(super) trait SystemExecutor: Send + Sync {

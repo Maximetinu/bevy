@@ -1,4 +1,9 @@
-use std::{borrow::Cow, cell::UnsafeCell, marker::PhantomData};
+use core::{cell::UnsafeCell, marker::PhantomData};
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, vec::Vec};
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 use bevy_ptr::UnsafeCellDeref;
 

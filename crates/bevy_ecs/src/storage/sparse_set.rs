@@ -7,7 +7,7 @@ use bevy_ptr::{OwningPtr, Ptr};
 use core::{cell::UnsafeCell, hash::Hash, marker::PhantomData};
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 type EntityIndex = u32;
 

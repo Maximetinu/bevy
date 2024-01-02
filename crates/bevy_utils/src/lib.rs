@@ -14,9 +14,9 @@ pub mod prelude {
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 #[cfg(all(feature = "once_cell", not(feature = "std")))]
-extern crate lock_api;
-#[cfg(all(feature = "once_cell", not(feature = "std")))]
 extern crate once_cell;
+#[cfg(all(feature = "once_cell", not(feature = "std")))]
+extern crate parking_lot;
 
 #[cfg(not(feature = "std"))]
 use alloc::boxed::Box;

@@ -7,6 +7,10 @@ use crate::world::unsafe_world_cell::UnsafeWorldCell;
 use crate::{archetype::ArchetypeComponentId, component::ComponentId, query::Access, world::World};
 
 use core::any::TypeId;
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, boxed::Box, vec::Vec};
+#[cfg(feature = "std")]
 use std::borrow::Cow;
 
 use super::IntoSystem;

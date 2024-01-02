@@ -1,5 +1,10 @@
 use core::ops::Not;
+
+#[cfg(feature = "std")]
 use std::borrow::Cow;
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, boxed::Box, format};
 
 use crate::system::{
     Adapt, AdapterSystem, CombinatorSystem, Combine, IntoSystem, ReadOnlySystem, System,
@@ -203,6 +208,9 @@ pub mod common_conditions {
         schedule::{State, States},
         system::{IntoSystem, Res, Resource, System},
     };
+
+    #[cfg(not(feature = "std"))]
+    use alloc::format;
 
     /// Generates a [`Condition`](super::Condition)-satisfying closure that returns `true`
     /// if the first time the condition is run and false every time after

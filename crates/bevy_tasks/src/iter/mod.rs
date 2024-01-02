@@ -1,7 +1,7 @@
 use crate::TaskPool;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 mod adapters;
 pub use adapters::*;

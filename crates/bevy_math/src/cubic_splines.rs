@@ -9,7 +9,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// A point in space of any dimension that supports the math ops needed for cubic spline
 /// interpolation.

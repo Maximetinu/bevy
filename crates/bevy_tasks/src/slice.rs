@@ -1,7 +1,7 @@
 use super::TaskPool;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// Provides functions for mapping read-only slices across a provided [`TaskPool`].
 pub trait ParallelSlice<T: Sync>: AsRef<[T]> {

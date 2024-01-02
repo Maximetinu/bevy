@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, vec::Vec};
+#[cfg(feature = "std")]
 use std::borrow::Cow;
 
 use super::{ReadOnlySystem, System};

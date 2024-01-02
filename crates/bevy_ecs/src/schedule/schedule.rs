@@ -1,7 +1,17 @@
-use std::{
-    collections::BTreeSet,
+use core::{
     fmt::{Debug, Write},
     result::Result,
+};
+
+#[cfg(feature = "std")]
+use std::collections::BTreeSet;
+
+#[cfg(not(feature = "std"))]
+use alloc::{
+    collections::BTreeSet,
+    format,
+    string::{String, ToString},
+    vec,
 };
 
 #[cfg(feature = "trace")]
@@ -26,7 +36,7 @@ use crate::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// Resource that stores [`Schedule`]s mapped to [`ScheduleLabel`]s.
 #[derive(Default, Resource)]
@@ -155,7 +165,15 @@ fn make_executor(kind: ExecutorKind) -> Box<dyn SystemExecutor> {
     match kind {
         ExecutorKind::Simple => Box::new(SimpleExecutor::new()),
         ExecutorKind::SingleThreaded => Box::new(SingleThreadedExecutor::new()),
+        #[cfg(feature = "multi-threaded")]
         ExecutorKind::MultiThreaded => Box::new(MultiThreadedExecutor::new()),
+        #[cfg(not(feature = "multi-threaded"))]
+        ExecutorKind::MultiThreaded => {
+            warn!(
+                "Multi-threaded executor is not available. Using single-threaded executor instead."
+            );
+            Box::new(SingleThreadedExecutor::new())
+        }
     }
 }
 

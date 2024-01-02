@@ -3,6 +3,9 @@ use downcast_rs::{impl_downcast, Downcast};
 use crate::App;
 use core::any::Any;
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+
 /// A collection of Bevy app logic and configuration.
 ///
 /// Plugins configure an [`App`]. When an [`App`] registers a plugin,
@@ -75,6 +78,9 @@ pub trait Plugins<Marker>: sealed::Plugins<Marker> {}
 impl<Marker, T> Plugins<Marker> for T where T: sealed::Plugins<Marker> {}
 
 mod sealed {
+
+    #[cfg(not(feature = "std"))]
+    use alloc::boxed::Box;
 
     use bevy_ecs::all_tuples;
 

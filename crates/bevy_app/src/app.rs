@@ -9,13 +9,17 @@ use bevy_ecs::{
     },
 };
 use bevy_utils::{intern::Interned, thiserror::Error, tracing::debug, HashMap, HashSet};
-use std::{
-    fmt::Debug,
-    panic::{catch_unwind, resume_unwind, AssertUnwindSafe},
-};
+use core::fmt::Debug;
+
+#[cfg(feature = "std")]
+use std::panic::{catch_unwind, resume_unwind, AssertUnwindSafe};
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{
+    boxed::Box,
+    string::{String, ToString},
+    vec::Vec,
+};
 
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::info_span;
@@ -653,10 +657,18 @@ impl App {
         self.plugin_registry.push(Box::new(PlaceholderPlugin));
 
         self.building_plugin_depth += 1;
-        let result = catch_unwind(AssertUnwindSafe(|| plugin.build(self)));
-        self.building_plugin_depth -= 1;
-        if let Err(payload) = result {
-            resume_unwind(payload);
+        #[cfg(feature = "std")]
+        {
+            let result = catch_unwind(AssertUnwindSafe(|| plugin.build(self)));
+            self.building_plugin_depth -= 1;
+            if let Err(payload) = result {
+                resume_unwind(payload);
+            }
+        }
+        #[cfg(not(feature = "std"))]
+        {
+            plugin.build(self);
+            self.building_plugin_depth -= 1;
         }
         self.plugin_registry[plugin_position_in_registry] = plugin;
         Ok(self)

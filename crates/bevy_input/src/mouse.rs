@@ -8,6 +8,7 @@ use bevy_ecs::{
     system::ResMut,
 };
 use bevy_math::Vec2;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
 
 #[cfg(feature = "serialize")]
@@ -21,8 +22,9 @@ use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 ///
 /// The event is read inside of the [`mouse_button_input_system`]
 /// to update the [`Input<MouseButton>`](ButtonInput<MouseButton>) resource.
-#[derive(Event, Debug, Clone, Copy, PartialEq, Eq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -47,8 +49,9 @@ pub struct MouseButtonInput {
 /// ## Updating
 ///
 /// The resource is updated inside of the [`mouse_button_input_system`].
-#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy, Reflect)]
-#[reflect(Debug, Hash, PartialEq)]
+#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, Hash, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -78,8 +81,9 @@ pub enum MouseButton {
 /// However, the event data does not make it possible to distinguish which device it is referring to.
 ///
 /// [`DeviceEvent::MouseMotion`]: https://docs.rs/winit/latest/winit/event/enum.DeviceEvent.html#variant.MouseMotion
-#[derive(Event, Debug, Clone, Copy, PartialEq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -96,8 +100,9 @@ pub struct MouseMotion {
 ///
 /// The value of the event can either be interpreted as the amount of lines or the amount of pixels
 /// to scroll.
-#[derive(Debug, Clone, Copy, Eq, PartialEq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -119,8 +124,9 @@ pub enum MouseScrollUnit {
 /// A mouse wheel event.
 ///
 /// This event is the translated version of the `WindowEvent::MouseWheel` from the `winit` crate.
-#[derive(Event, Debug, Clone, Copy, PartialEq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),

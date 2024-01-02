@@ -13,7 +13,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 /// An opaque unique ID for a [`Table`] within a [`World`].
 ///

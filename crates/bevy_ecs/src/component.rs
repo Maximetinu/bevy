@@ -14,13 +14,15 @@ use core::cell::UnsafeCell;
 use core::{
     alloc::Layout,
     any::{Any, TypeId},
-    borrow::Cow,
     marker::PhantomData,
     mem::needs_drop,
 };
 
+#[cfg(feature = "std")]
+use std::borrow::Cow;
+
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{borrow::Cow, vec::Vec};
 
 /// A data type that can be used to store data for an [entity].
 ///

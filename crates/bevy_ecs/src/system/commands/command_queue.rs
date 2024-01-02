@@ -5,6 +5,9 @@ use bevy_ptr::{OwningPtr, Unaligned};
 use super::Command;
 use crate::world::World;
 
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
+
 struct CommandMeta {
     /// SAFETY: The `value` must point to a value of type `T: Command`,
     /// where `T` is some specific type that was used to produce this metadata.

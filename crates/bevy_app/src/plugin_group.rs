@@ -3,7 +3,11 @@ use bevy_utils::{tracing::debug, tracing::warn, HashMap};
 use core::any::TypeId;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{
+    boxed::Box,
+    string::{String, ToString},
+    vec::Vec,
+};
 
 /// Combines multiple [`Plugin`]s into a single unit.
 pub trait PluginGroup: Sized {

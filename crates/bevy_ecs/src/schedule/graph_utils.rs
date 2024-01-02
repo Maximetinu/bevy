@@ -9,7 +9,7 @@ use fixedbitset::FixedBitSet;
 use crate::schedule::set::*;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 /// Unique identifier for a system or system set stored in a [`ScheduleGraph`].
 ///

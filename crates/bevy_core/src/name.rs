@@ -1,14 +1,22 @@
 use bevy_ecs::query::QueryData;
-use bevy_ecs::{component::Component, entity::Entity, reflect::ReflectComponent};
+#[cfg(feature = "bevy_reflect")]
+use bevy_ecs::reflect::ReflectComponent;
+use bevy_ecs::{component::Component, entity::Entity};
 
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::std_traits::ReflectDefault;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
 use bevy_utils::AHasher;
-use std::{
-    borrow::Cow,
+use core::{
     hash::{Hash, Hasher},
     ops::Deref,
 };
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, borrow::ToOwned, string::String};
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 /// Component used to identify an entity. Stores a hash for faster comparisons.
 ///
@@ -17,8 +25,9 @@ use std::{
 /// [`Name`] should not be treated as a globally unique identifier for entities,
 /// as multiple entities can have the same name.  [`Entity`] should be
 /// used instead as the default unique identifier.
-#[derive(Reflect, Component, Clone)]
-#[reflect(Component, Default, Debug)]
+#[derive(Component, Clone)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Component, Default, Debug))]
 pub struct Name {
     hash: u64, // TODO: Shouldn't be serialized
     name: Cow<'static, str>,

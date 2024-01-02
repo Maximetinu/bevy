@@ -11,7 +11,13 @@ use crate::{
 };
 
 use bevy_utils::all_tuples;
-use std::{any::TypeId, borrow::Cow, marker::PhantomData};
+use core::{any::TypeId, marker::PhantomData};
+
+#[cfg(feature = "std")]
+use std::borrow::Cow;
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, vec, vec::Vec};
 
 /// A function system that runs with exclusive [`World`] access.
 ///

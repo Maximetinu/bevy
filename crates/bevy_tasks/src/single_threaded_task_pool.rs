@@ -6,7 +6,7 @@ use rclite::{Arc, Rc};
 use std::{rc::Rc, sync::Arc};
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 #[cfg(not(feature = "std"))]
 use alloc::string::String;

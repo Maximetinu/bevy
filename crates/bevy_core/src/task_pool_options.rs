@@ -1,6 +1,9 @@
 use bevy_tasks::{AsyncComputeTaskPool, ComputeTaskPool, IoTaskPool, TaskPoolBuilder};
 use bevy_utils::tracing::trace;
 
+#[cfg(not(feature = "std"))]
+use alloc::string::ToString;
+
 /// Defines a simple way to determine how many threads to use given the number of remaining cores
 /// and number of total cores
 #[derive(Clone, Debug)]

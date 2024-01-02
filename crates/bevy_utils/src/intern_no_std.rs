@@ -5,9 +5,10 @@
 //! and make comparisons for any type as fast as integers.
 
 use alloc::borrow::ToOwned;
+use alloc::boxed::Box;
 use core::{fmt::Debug, hash::Hash, ops::Deref};
-use lock_api::RwLock;
 use once_cell::sync::OnceCell;
+use parking_lot::RwLock;
 
 use crate::HashSet;
 

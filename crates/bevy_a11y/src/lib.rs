@@ -4,10 +4,17 @@
 #![warn(missing_docs)]
 #![forbid(unsafe_code)]
 
-use std::sync::{
-    atomic::{AtomicBool, Ordering},
-    Arc,
-};
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+#[cfg(not(feature = "std"))]
+extern crate rclite;
+
+use core::sync::atomic::{AtomicBool, Ordering};
+
+#[cfg(not(feature = "std"))]
+use rclite::Arc;
+#[cfg(feature = "std")]
+use std::sync::Arc;
 
 pub use accesskit;
 use accesskit::NodeBuilder;

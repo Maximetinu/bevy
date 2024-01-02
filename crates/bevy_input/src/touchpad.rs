@@ -1,6 +1,7 @@
 //! The touchpad input functionality.
 
 use bevy_ecs::event::Event;
+#[cfg(feature = "bevy_reflect")]
 use bevy_reflect::Reflect;
 
 #[cfg(feature = "serialize")]
@@ -14,8 +15,9 @@ use bevy_reflect::{ReflectDeserialize, ReflectSerialize};
 /// ## Platform-specific
 ///
 /// - Only available on **`macOS`**.
-#[derive(Event, Debug, Clone, Copy, PartialEq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),
@@ -31,8 +33,9 @@ pub struct TouchpadMagnify(pub f32);
 /// ## Platform-specific
 ///
 /// - Only available on **`macOS`**.
-#[derive(Event, Debug, Clone, Copy, PartialEq, Reflect)]
-#[reflect(Debug, PartialEq)]
+#[derive(Event, Debug, Clone, Copy, PartialEq)]
+#[cfg_attr(feature = "bevy_reflect", derive(Reflect))]
+#[cfg_attr(feature = "bevy_reflect", reflect(Debug, PartialEq))]
 #[cfg_attr(
     feature = "serialize",
     derive(serde::Serialize, serde::Deserialize),

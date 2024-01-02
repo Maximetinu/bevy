@@ -10,7 +10,10 @@ use crate::{
 };
 use bevy_ptr::{OwningPtr, Ptr};
 use bevy_utils::tracing::debug;
-use std::{any::TypeId, marker::PhantomData};
+use core::{any::TypeId, marker::PhantomData};
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 use super::{unsafe_world_cell::UnsafeEntityCell, Ref};
 

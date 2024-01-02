@@ -7,7 +7,7 @@ use bevy_ecs::prelude::Resource;
 use bevy_utils::tracing::info;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// A configuration struct for automated CI testing.
 ///

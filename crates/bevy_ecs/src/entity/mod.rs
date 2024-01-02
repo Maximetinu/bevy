@@ -47,10 +47,10 @@ use core::{convert::TryFrom, fmt, hash::Hash, mem, sync::atomic::Ordering};
 use serde::{Deserialize, Serialize};
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 #[cfg(target_has_atomic = "64")]
-use std::sync::atomic::AtomicI64 as AtomicIdCursor;
+use core::sync::atomic::AtomicI64 as AtomicIdCursor;
 #[cfg(target_has_atomic = "64")]
 type IdCursor = i64;
 

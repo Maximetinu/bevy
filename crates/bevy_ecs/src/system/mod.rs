@@ -114,7 +114,7 @@ mod system_param;
 mod system_registry;
 
 #[cfg(not(feature = "std"))]
-use alloc::borrow::Cow;
+use alloc::{borrow::Cow, format};
 #[cfg(feature = "std")]
 use std::borrow::Cow;
 

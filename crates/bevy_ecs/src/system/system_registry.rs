@@ -5,6 +5,9 @@ use crate::{self as bevy_ecs};
 use bevy_ecs_macros::Component;
 use thiserror::Error;
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+
 /// A small wrapper for [`BoxedSystem`] that also keeps track whether or not the system has been initialized.
 #[derive(Component)]
 struct RegisteredSystem<I, O> {

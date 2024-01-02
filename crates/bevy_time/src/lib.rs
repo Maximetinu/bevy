@@ -2,6 +2,9 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 /// Common run conditions
 pub mod common_conditions;
 mod fixed;

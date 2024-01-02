@@ -1,6 +1,9 @@
 use crate::{entity::Entity, world::World};
 use bevy_utils::EntityHashMap;
 
+#[cfg(not(feature = "std"))]
+use alloc::{boxed::Box, vec::Vec};
+
 /// Operation to map all contained [`Entity`] fields in a type to new values.
 ///
 /// As entity IDs are valid only for the [`World`] they're sourced from, using [`Entity`]

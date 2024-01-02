@@ -7,6 +7,9 @@
 //! The [`WindowPlugin`] sets up some global window-related parameters and
 //! is part of the [`DefaultPlugins`](https://docs.rs/bevy/latest/bevy/struct.DefaultPlugins.html).
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 use bevy_a11y::Focus;
 
 mod cursor;
@@ -26,13 +29,18 @@ pub use window::*;
 pub mod prelude {
     #[doc(hidden)]
     pub use crate::{
-        CursorEntered, CursorIcon, CursorLeft, CursorMoved, FileDragAndDrop, Ime, MonitorSelection,
+        CursorEntered, CursorIcon, CursorLeft, CursorMoved, Ime, MonitorSelection,
         ReceivedCharacter, Window, WindowMoved, WindowPlugin, WindowPosition,
         WindowResizeConstraints,
     };
+
+    #[cfg(feature = "std")]
+    #[doc(hidden)]
+    pub use crate::FileDragAndDrop;
 }
 
 use bevy_app::prelude::*;
+#[cfg(feature = "std")]
 use std::path::PathBuf;
 
 impl Default for WindowPlugin {
@@ -97,10 +105,12 @@ impl Plugin for WindowPlugin {
             .add_event::<WindowOccluded>()
             .add_event::<WindowScaleFactorChanged>()
             .add_event::<WindowBackendScaleFactorChanged>()
-            .add_event::<FileDragAndDrop>()
             .add_event::<WindowMoved>()
             .add_event::<WindowThemeChanged>()
             .add_event::<ApplicationLifetime>();
+
+        #[cfg(feature = "std")]
+        app.add_event::<FileDragAndDrop>();
 
         if let Some(primary_window) = &self.primary_window {
             let initial_focus = app
@@ -128,45 +138,48 @@ impl Plugin for WindowPlugin {
             app.add_systems(Update, close_when_requested);
         }
 
-        // Register event types
-        app.register_type::<WindowResized>()
-            .register_type::<RequestRedraw>()
-            .register_type::<WindowCreated>()
-            .register_type::<WindowCloseRequested>()
-            .register_type::<WindowClosed>()
-            .register_type::<CursorMoved>()
-            .register_type::<CursorEntered>()
-            .register_type::<CursorLeft>()
-            .register_type::<ReceivedCharacter>()
-            .register_type::<WindowFocused>()
-            .register_type::<WindowOccluded>()
-            .register_type::<WindowScaleFactorChanged>()
-            .register_type::<WindowBackendScaleFactorChanged>()
-            .register_type::<FileDragAndDrop>()
-            .register_type::<WindowMoved>()
-            .register_type::<WindowThemeChanged>()
-            .register_type::<ApplicationLifetime>();
+        #[cfg(feature = "bevy_reflect")]
+        {
+            // Register event types
+            app.register_type::<WindowResized>()
+                .register_type::<RequestRedraw>()
+                .register_type::<WindowCreated>()
+                .register_type::<WindowCloseRequested>()
+                .register_type::<WindowClosed>()
+                .register_type::<CursorMoved>()
+                .register_type::<CursorEntered>()
+                .register_type::<CursorLeft>()
+                .register_type::<ReceivedCharacter>()
+                .register_type::<WindowFocused>()
+                .register_type::<WindowOccluded>()
+                .register_type::<WindowScaleFactorChanged>()
+                .register_type::<WindowBackendScaleFactorChanged>()
+                .register_type::<FileDragAndDrop>()
+                .register_type::<WindowMoved>()
+                .register_type::<WindowThemeChanged>()
+                .register_type::<ApplicationLifetime>();
 
-        // Register window descriptor and related types
-        app.register_type::<Window>()
-            .register_type::<PrimaryWindow>()
-            .register_type::<Cursor>()
-            .register_type::<CursorIcon>()
-            .register_type::<CursorGrabMode>()
-            .register_type::<CompositeAlphaMode>()
-            .register_type::<WindowResolution>()
-            .register_type::<WindowPosition>()
-            .register_type::<WindowMode>()
-            .register_type::<WindowLevel>()
-            .register_type::<PresentMode>()
-            .register_type::<InternalWindowState>()
-            .register_type::<MonitorSelection>()
-            .register_type::<WindowResizeConstraints>()
-            .register_type::<WindowTheme>()
-            .register_type::<EnabledButtons>();
+            // Register window descriptor and related types
+            app.register_type::<Window>()
+                .register_type::<PrimaryWindow>()
+                .register_type::<Cursor>()
+                .register_type::<CursorIcon>()
+                .register_type::<CursorGrabMode>()
+                .register_type::<CompositeAlphaMode>()
+                .register_type::<WindowResolution>()
+                .register_type::<WindowPosition>()
+                .register_type::<WindowMode>()
+                .register_type::<WindowLevel>()
+                .register_type::<PresentMode>()
+                .register_type::<InternalWindowState>()
+                .register_type::<MonitorSelection>()
+                .register_type::<WindowResizeConstraints>()
+                .register_type::<WindowTheme>()
+                .register_type::<EnabledButtons>();
 
-        // Register `PathBuf` as it's used by `FileDragAndDrop`
-        app.register_type::<PathBuf>();
+            // Register `PathBuf` as it's used by `FileDragAndDrop`
+            app.register_type::<PathBuf>();
+        }
     }
 }
 

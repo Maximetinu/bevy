@@ -2,6 +2,12 @@
 #![warn(missing_docs)]
 #![doc = include_str!("../README.md")]
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
+#[cfg(not(feature = "std"))]
+extern crate rclite;
+
 #[cfg(target_pointer_width = "16")]
 compile_error!("bevy_ecs cannot safely compile for a 16-bit platform.");
 

@@ -21,7 +21,7 @@ use bevy_utils::all_tuples;
 use core::any::TypeId;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 /// The `Bundle` trait enables insertion and removal of [`Component`]s from an entity.
 ///

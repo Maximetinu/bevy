@@ -12,6 +12,9 @@ mod schedule_runner;
 #[cfg(feature = "bevy_ci_testing")]
 pub mod ci_testing;
 
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
 pub use app::*;
 pub use bevy_derive::DynamicPlugin;
 pub use main_schedule::*;

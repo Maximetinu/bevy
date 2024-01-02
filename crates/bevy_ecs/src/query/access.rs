@@ -5,7 +5,7 @@ use core::marker::PhantomData;
 use fixedbitset::FixedBitSet;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 /// A wrapper struct to make Debug representations of [`FixedBitSet`] easier
 /// to read, when used to store [`SparseSetIndex`].

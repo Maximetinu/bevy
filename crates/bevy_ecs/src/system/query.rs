@@ -8,7 +8,7 @@ use crate::{
     },
     world::{unsafe_world_cell::UnsafeWorldCell, Mut},
 };
-use std::{any::TypeId, borrow::Borrow};
+use core::{any::TypeId, borrow::Borrow};
 
 /// [System parameter] that provides selective access to the [`Component`] data stored in a [`World`].
 ///

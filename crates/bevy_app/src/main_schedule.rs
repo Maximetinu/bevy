@@ -6,7 +6,7 @@ use bevy_ecs::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 /// The schedule that contains the app logic that is evaluated each tick of [`App::update()`].
 ///

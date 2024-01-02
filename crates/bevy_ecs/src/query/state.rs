@@ -17,7 +17,7 @@ use core::{any::TypeId, borrow::Borrow, fmt, mem::MaybeUninit};
 use fixedbitset::FixedBitSet;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 use super::{
     NopWorldQuery, QueryComponentError, QueryData, QueryEntityError, QueryFilter, QueryManyIter,

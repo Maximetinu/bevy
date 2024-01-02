@@ -2,9 +2,7 @@ use super::{InvalidDirectionError, Primitive3d};
 use crate::Vec3;
 
 #[cfg(not(feature = "std"))]
-use alloc::boxed::Box;
-#[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// A normalized vector pointing in a direction in 3D space
 #[derive(Clone, Copy, Debug, PartialEq)]

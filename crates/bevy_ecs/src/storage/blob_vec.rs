@@ -1,9 +1,9 @@
-use std::{
-    alloc::{handle_alloc_error, Layout},
-    cell::UnsafeCell,
-    num::NonZeroUsize,
-    ptr::NonNull,
-};
+use core::{cell::UnsafeCell, num::NonZeroUsize, ptr::NonNull};
+
+#[cfg(not(feature = "std"))]
+use alloc::alloc::{handle_alloc_error, Layout};
+#[cfg(feature = "std")]
+use std::alloc::{handle_alloc_error, Layout};
 
 use bevy_ptr::{OwningPtr, Ptr, PtrMut};
 use bevy_utils::OnDrop;
@@ -127,6 +127,8 @@ impl BlobVec {
         let new_capacity = self.capacity + increment.get();
         let new_layout =
             array_layout(&self.item_layout, new_capacity).expect("array layout should be valid");
+
+        #[cfg(feature = "std")]
         let new_data = if self.capacity == 0 {
             // SAFETY:
             // - layout has non-zero size as per safety requirement
@@ -141,6 +143,19 @@ impl BlobVec {
             // here and the overflow is handled in `array_layout`
             unsafe {
                 std::alloc::realloc(
+                    self.get_ptr_mut().as_ptr(),
+                    array_layout(&self.item_layout, self.capacity)
+                        .expect("array layout should be valid"),
+                    new_layout.size(),
+                )
+            }
+        };
+        #[cfg(not(feature = "std"))]
+        let new_data = if self.capacity == 0 {
+            unsafe { alloc::alloc::alloc(new_layout) }
+        } else {
+            unsafe {
+                alloc::alloc::realloc(
                     self.get_ptr_mut().as_ptr(),
                     array_layout(&self.item_layout, self.capacity)
                         .expect("array layout should be valid"),
@@ -406,7 +421,10 @@ impl Drop for BlobVec {
         if array_layout.size() > 0 {
             // SAFETY: data ptr layout is correct, swap_scratch ptr layout is correct
             unsafe {
+                #[cfg(feature = "std")]
                 std::alloc::dealloc(self.get_ptr_mut().as_ptr(), array_layout);
+                #[cfg(not(feature = "std"))]
+                alloc::alloc::dealloc(self.get_ptr_mut().as_ptr(), array_layout);
             }
         }
     }

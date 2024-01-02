@@ -4,7 +4,7 @@ use crate::{
     system::{ReadOnlySystemParam, SystemParam},
     world::{FromWorld, World},
 };
-use std::sync::atomic::{AtomicUsize, Ordering};
+use core::sync::atomic::{AtomicUsize, Ordering};
 
 use super::unsafe_world_cell::UnsafeWorldCell;
 

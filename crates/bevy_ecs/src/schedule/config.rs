@@ -11,7 +11,7 @@ use crate::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec, vec::Vec};
 
 fn new_condition<M>(condition: impl Condition<M>) -> BoxedCondition {
     let condition_system = IntoSystem::into_system(condition);

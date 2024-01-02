@@ -9,7 +9,7 @@ use crate::{
 };
 use bevy_ptr::{ThinSlicePtr, UnsafeCellDeref};
 use bevy_utils::all_tuples;
-use std::{cell::UnsafeCell, marker::PhantomData};
+use core::{cell::UnsafeCell, marker::PhantomData};
 
 /// Types that can be fetched from a [`World`] using a [`Query`].
 ///

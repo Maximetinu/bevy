@@ -17,7 +17,7 @@ use crate::{
     system::Resource,
 };
 use bevy_ptr::Ptr;
-use std::{any::TypeId, cell::UnsafeCell, fmt::Debug, marker::PhantomData};
+use core::{any::TypeId, cell::UnsafeCell, fmt::Debug, marker::PhantomData};
 
 /// Variant of the [`World`] where resource and component accesses take `&self`, and the responsibility to avoid
 /// aliasing violations are given to the caller instead of being checked at compile-time by rust's unique XOR shared rule.

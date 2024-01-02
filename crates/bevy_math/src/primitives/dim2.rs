@@ -2,9 +2,7 @@ use super::{InvalidDirectionError, Primitive2d, WindingOrder};
 use crate::Vec2;
 
 #[cfg(not(feature = "std"))]
-use alloc::boxed::Box;
-#[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// A normalized vector pointing in a direction in 2D space
 #[derive(Clone, Copy, Debug, PartialEq)]

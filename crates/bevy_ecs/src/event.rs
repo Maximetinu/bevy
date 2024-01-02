@@ -15,7 +15,7 @@ use core::{
 };
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// A type that can be stored in an [`Events<E>`] resource
 /// You can conveniently access events using the [`EventReader`] and [`EventWriter`] system parameter.

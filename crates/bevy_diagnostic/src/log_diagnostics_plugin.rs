@@ -6,7 +6,7 @@ use bevy_time::{Real, Time, Timer, TimerMode};
 use bevy_utils::Duration;
 
 #[cfg(not(feature = "std"))]
-use alloc::vec::Vec;
+use alloc::{boxed::Box, vec::Vec};
 
 /// An App Plugin that logs diagnostics to the console.
 ///

@@ -8,6 +8,9 @@ use bevy_utils::define_label;
 use bevy_utils::intern::Interned;
 pub use bevy_utils::label::DynEq;
 
+#[cfg(not(feature = "std"))]
+use alloc::boxed::Box;
+
 use crate::system::{
     ExclusiveSystemParamFunction, IsExclusiveFunctionSystem, IsFunctionSystem, SystemParamFunction,
 };

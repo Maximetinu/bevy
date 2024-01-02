@@ -3,7 +3,13 @@ use crate::change_detection::{MutUntyped, TicksMut};
 use crate::component::{ComponentId, ComponentTicks, Components, Tick, TickCells};
 use crate::storage::{Column, SparseSet, TableRow};
 use bevy_ptr::{OwningPtr, Ptr, UnsafeCellDeref};
-use std::{mem::ManuallyDrop, thread::ThreadId};
+use core::mem::ManuallyDrop;
+
+#[cfg(feature = "std")]
+use std::thread::ThreadId;
+
+#[cfg(not(feature = "std"))]
+use alloc::string::String;
 
 /// The type-erased backing storage and metadata for a single resource within a [`World`].
 ///
@@ -14,6 +20,7 @@ pub struct ResourceData<const SEND: bool> {
     column: ManuallyDrop<Column>,
     type_name: String,
     id: ArchetypeComponentId,
+    #[cfg(feature = "std")]
     origin_thread_id: Option<ThreadId>,
 }
 
@@ -23,6 +30,7 @@ impl<const SEND: bool> Drop for ResourceData<SEND> {
             // If this thread is already panicking, panicking again will cause
             // the entire process to abort. In this case we choose to avoid
             // dropping or checking this altogether and just leak the column.
+            #[cfg(feature = "std")]
             if std::thread::panicking() {
                 return;
             }
@@ -51,6 +59,7 @@ impl<const SEND: bool> ResourceData<SEND> {
         if SEND {
             return;
         }
+        #[cfg(feature = "std")]
         if self.origin_thread_id != Some(std::thread::current().id()) {
             // Panic in tests, as testing for aborting is nearly impossible
             panic!(
@@ -136,6 +145,7 @@ impl<const SEND: bool> ResourceData<SEND> {
             self.validate_access();
             self.column.replace(Self::ROW, value, change_tick);
         } else {
+            #[cfg(feature = "std")]
             if !SEND {
                 self.origin_thread_id = Some(std::thread::current().id());
             }
@@ -167,6 +177,7 @@ impl<const SEND: bool> ResourceData<SEND> {
                 .get_changed_tick_unchecked(Self::ROW)
                 .deref_mut() = change_ticks.changed;
         } else {
+            #[cfg(feature = "std")]
             if !SEND {
                 self.origin_thread_id = Some(std::thread::current().id());
             }
@@ -279,6 +290,7 @@ impl<const SEND: bool> Resources<SEND> {
                 column: ManuallyDrop::new(Column::with_capacity(component_info, 1)),
                 type_name: String::from(component_info.name()),
                 id: f(),
+                #[cfg(feature = "std")]
                 origin_thread_id: None,
             }
         })

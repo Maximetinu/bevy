@@ -27,7 +27,7 @@ use crate::{
 };
 use bevy_ptr::{OwningPtr, Ptr};
 use bevy_utils::tracing::warn;
-use std::{
+use core::{
     any::TypeId,
     fmt,
     mem::MaybeUninit,
@@ -38,6 +38,9 @@ mod identifier;
 pub use identifier::WorldId;
 
 use self::unsafe_world_cell::{UnsafeEntityCell, UnsafeWorldCell};
+
+#[cfg(not(feature = "std"))]
+use alloc::vec::Vec;
 
 /// Stores and exposes operations on [entities](Entity), [components](Component), resources,
 /// and their associated metadata.

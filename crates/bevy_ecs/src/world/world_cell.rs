@@ -7,12 +7,13 @@ use crate::{
     system::Resource,
     world::{Mut, World},
 };
-use std::{
+use core::{
     any::TypeId,
     cell::RefCell,
     ops::{Deref, DerefMut},
-    rc::Rc,
 };
+
+use rclite::Rc;
 
 use super::unsafe_world_cell::UnsafeWorldCell;
 

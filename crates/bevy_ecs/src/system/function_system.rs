@@ -9,7 +9,12 @@ use crate::{
 };
 
 use bevy_utils::all_tuples;
-use std::{any::TypeId, borrow::Cow, marker::PhantomData};
+use core::{any::TypeId, marker::PhantomData};
+
+#[cfg(not(feature = "std"))]
+use alloc::{borrow::Cow, vec, vec::Vec};
+#[cfg(feature = "std")]
+use std::borrow::Cow;
 
 #[cfg(feature = "trace")]
 use bevy_utils::tracing::{info_span, Span};

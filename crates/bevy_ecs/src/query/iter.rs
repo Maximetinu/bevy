@@ -6,7 +6,12 @@ use crate::{
     storage::{Table, TableId, TableRow, Tables},
     world::unsafe_world_cell::UnsafeWorldCell,
 };
-use std::{borrow::Borrow, iter::FusedIterator, mem::MaybeUninit, ops::Range};
+use core::{iter::FusedIterator, mem::MaybeUninit, ops::Range};
+
+#[cfg(not(feature = "std"))]
+use alloc::borrow::Borrow;
+#[cfg(feature = "std")]
+use std::borrow::Borrow;
 
 use super::{QueryData, QueryFilter, ReadOnlyQueryData};
 
