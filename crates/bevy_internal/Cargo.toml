@@ -146,7 +146,7 @@ file_watcher = ["bevy_asset?/file_watcher"]
 embedded_watcher = ["bevy_asset?/embedded_watcher"]
 
 std = [
-  "bevy_a11y/std",
+  "bevy_a11y",
   "bevy_app/std",
   "bevy_core/std",
   "bevy_diagnostic/std",
@@ -154,28 +154,28 @@ std = [
   "bevy_hierarchy/std",
   "bevy_input/std",
   "bevy_log",
+  "bevy_tasks",
   "bevy_math/std",
   "bevy_time/std",
   "bevy_transform/std",
   "bevy_window/std",
   "bevy_utils/std",
-  "bevy_tasks/std",
 ]
 
 no_std = [
   "bevy_math/libm",
-  "bevy_a11y/rclite",
-  "bevy_tasks/rclite",
-  "bevy_tasks/once_cell",
-  "bevy_tasks/thread_local_exp",
-  "bevy_utils/once_cell",
-  "bevy_ecs/rclite",
+  "bevy_diagnostic/no_std",
+  "bevy_app/no_std",
+  "bevy_utils/no_std",
   "bevy_time/thingbuf",
+  "bevy_ecs/no_std",
+  "bevy_derive/no_std",
+  "bevy_time/no_std",
 ]
 
 [dependencies]
 # bevy
-bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0" }
+bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0", optional = true }
 bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
 bevy_core = { path = "../bevy_core", default-features = false, version = "0.12.0" }
 bevy_derive = { path = "../bevy_derive", version = "0.12.0" }
@@ -189,7 +189,7 @@ bevy_time = { path = "../bevy_time", default-features = false, version = "0.12.0
 bevy_transform = { path = "../bevy_transform", default-features = false, version = "0.12.0" }
 bevy_window = { path = "../bevy_window", default-features = false, version = "0.12.0" }
 bevy_utils = { path = "../bevy_utils", default-features = false, version = "0.12.0" }
-bevy_tasks = { path = "../bevy_tasks", default-features = false, version = "0.12.0" }
+bevy_tasks = { path = "../bevy_tasks", default-features = false, version = "0.12.0", optional = true }
 # bevy (optional)
 bevy_animation = { path = "../bevy_animation", optional = true, version = "0.12.0" }
 bevy_asset = { path = "../bevy_asset", optional = true, version = "0.12.0" }

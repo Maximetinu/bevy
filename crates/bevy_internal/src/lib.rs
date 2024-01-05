@@ -1,3 +1,4 @@
+#![cfg_attr(feature = "no_std", no_std)]
 #![warn(missing_docs)]
 //! This module is separated into its own crate to enable simple dynamic linking for Bevy, and should not be used directly
 
@@ -7,6 +8,7 @@ pub mod prelude;
 mod default_plugins;
 pub use default_plugins::*;
 
+#[cfg(feature = "bevy_a11y")]
 pub mod a11y {
     //! Integrate with platform accessibility APIs.
     pub use bevy_a11y::*;
@@ -71,6 +73,7 @@ pub mod scene {
     pub use bevy_scene::*;
 }
 
+#[cfg(feature = "bevy_tasks")]
 pub mod tasks {
     //! Pools for async, IO, and compute tasks.
     pub use bevy_tasks::*;

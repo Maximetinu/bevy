@@ -2,6 +2,9 @@ use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput};
 
+#[cfg(feature = "no_std")]
+use alloc::string::ToString;
+
 pub fn derive_enum_variant_meta(input: TokenStream) -> TokenStream {
     let ast = parse_macro_input!(input as DeriveInput);
     let variants = match &ast.data {

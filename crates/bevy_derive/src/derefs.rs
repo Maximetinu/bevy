@@ -2,6 +2,9 @@ use proc_macro::{Span, TokenStream};
 use quote::quote;
 use syn::{parse_macro_input, Data, DeriveInput, Field, Index, Member, Type};
 
+#[cfg(feature = "no_std")]
+use alloc::format;
+
 const DEREF: &str = "Deref";
 const DEREF_MUT: &str = "DerefMut";
 const DEREF_ATTR: &str = "deref";

@@ -44,12 +44,14 @@ pub struct GlobalTransform(Affine3A);
 
 macro_rules! impl_local_axis {
     ($pos_name: ident, $neg_name: ident, $axis: ident) => {
+        #[cfg_attr(not_feature = "std", allow(missing_docs))]
         #[cfg_attr(feature = "std", doc=std::concat!("Return the local ", std::stringify!($pos_name), " vector (", std::stringify!($axis) ,")."))]
         #[inline]
         pub fn $pos_name(&self) -> Vec3 {
             (self.0.matrix3 * Vec3::$axis).normalize()
         }
 
+        #[cfg_attr(not_feature = "std", allow(missing_docs))]
         #[cfg_attr(feature = "std", doc=std::concat!("Return the local ", std::stringify!($neg_name), " vector (-", std::stringify!($axis) ,")."))]
         #[inline]
         pub fn $neg_name(&self) -> Vec3 {

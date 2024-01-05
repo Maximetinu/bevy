@@ -1,7 +1,16 @@
+use core::hash::BuildHasherDefault;
+
 use proc_macro::{TokenStream, TokenTree};
 use quote::{quote, quote_spanned};
+#[cfg(feature = "std")]
 use rustc_hash::FxHashSet;
 use syn::{spanned::Spanned, Ident};
+
+#[cfg(not(feature = "std"))]
+use alloc::{format, string::ToString, vec};
+
+#[cfg(not(feature = "std"))]
+use ahash::AHasher;
 
 /// Finds an identifier that will not conflict with the specified set of tokens.
 /// If the identifier is present in `haystack`, extra characters will be added
@@ -15,7 +24,15 @@ pub fn ensure_no_collision(value: Ident, haystack: TokenStream) -> Ident {
         // List of token streams that will be visited in future loop iterations.
         let mut unvisited = vec![haystack];
         // Identifiers we have found while searching tokens.
+        #[cfg(feature = "std")]
         let mut found = FxHashSet::default();
+
+        #[cfg(not(feature = "std"))]
+        let mut found: hashbrown::HashSet<
+            alloc::string::String,
+            BuildHasherDefault<AHasher>,
+        > = hashbrown::HashSet::default();
+
         while let Some(tokens) = unvisited.pop() {
             for t in tokens {
                 match t {

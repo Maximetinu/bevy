@@ -21,6 +21,7 @@ std = [
 
   "serde?/std",
   "smol_str/std",
+  "bevy_a11y",
 ]
 bevy_reflect = [
   "dep:bevy_reflect",
@@ -30,7 +31,7 @@ bevy_reflect = [
 
 [dependencies]
 # bevy
-bevy_a11y = { path = "../bevy_a11y", default-features = false, version = "0.12.0" }
+bevy_a11y = { path = "../bevy_a11y", default-features = false, optional = true, version = "0.12.0" }
 bevy_app = { path = "../bevy_app", default-features = false, version = "0.12.0" }
 bevy_ecs = { path = "../bevy_ecs", default-features = false, version = "0.12.0" }
 bevy_math = { path = "../bevy_math", default-features = false, version = "0.12.0" }

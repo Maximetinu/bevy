@@ -34,7 +34,7 @@ pub use thread_executor::{ThreadExecutor, ThreadExecutorTicker};
 
 #[cfg(feature = "async-io")]
 pub use async_io::block_on;
-#[cfg(not(feature = "async-io"))]
+#[cfg(all(feature = "futures-lite", not(feature = "async-io")))]
 pub use futures_lite::future::block_on;
 
 mod iter;

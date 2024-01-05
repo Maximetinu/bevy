@@ -925,8 +925,8 @@ impl AxisSettings {
         if old_value.is_none() {
             return true;
         }
-
-        f32::abs(new_value - old_value.unwrap()) > self.threshold
+        let change = new_value - old_value.unwrap();
+        (change > 0. && change > self.threshold) || (change < 0. && change < -self.threshold)
     }
 
     /// Filters the `new_value` based on the `old_value`, according to the [`AxisSettings`].
@@ -1006,7 +1006,8 @@ impl ButtonAxisSettings {
             return true;
         }
 
-        f32::abs(new_value - old_value.unwrap()) > self.threshold
+        let change = new_value - old_value.unwrap();
+        (change > 0. && change > self.threshold) || (change < 0. && change < -self.threshold)
     }
 
     /// Filters the `new_value` based on the `old_value`, according to the [`ButtonAxisSettings`].

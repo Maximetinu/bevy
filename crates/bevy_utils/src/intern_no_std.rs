@@ -8,7 +8,7 @@ use alloc::borrow::ToOwned;
 use alloc::boxed::Box;
 use core::{fmt::Debug, hash::Hash, ops::Deref};
 use once_cell::sync::OnceCell;
-use parking_lot::RwLock;
+use spin::RwLock;
 
 use crate::HashSet;
 

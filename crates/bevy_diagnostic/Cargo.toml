@@ -21,6 +21,12 @@ std = [
   "bevy_utils/std",
   "sysinfo",
 ]
+no_std = [
+  "bevy_app/no_std",
+  "bevy_ecs/no_std",
+  "bevy_time/no_std",
+  "bevy_utils/no_std",
+]
 
 [dependencies]
 # bevy

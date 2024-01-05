@@ -40,7 +40,6 @@ impl PluginGroup for DefaultPlugins {
     fn build(self) -> PluginGroupBuilder {
         let mut group = PluginGroupBuilder::start::<Self>();
         group = group
-            .add(bevy_core::TaskPoolPlugin::default())
             .add(bevy_core::TypeRegistrationPlugin)
             .add(bevy_core::FrameCountPlugin)
             .add(bevy_time::TimePlugin)
@@ -48,8 +47,12 @@ impl PluginGroup for DefaultPlugins {
             .add(bevy_hierarchy::HierarchyPlugin)
             .add(bevy_diagnostic::DiagnosticsPlugin)
             .add(bevy_input::InputPlugin)
-            .add(bevy_window::WindowPlugin::default())
-            .add(bevy_a11y::AccessibilityPlugin);
+            .add(bevy_window::WindowPlugin::default());
+
+        #[cfg(feature = "bevy_a11y")]
+        {
+            group = group.add(bevy_a11y::AccessibilityPlugin);
+        }
 
         #[cfg(feature = "bevy_log")]
         {
@@ -69,6 +72,10 @@ impl PluginGroup for DefaultPlugins {
         #[cfg(feature = "bevy_winit")]
         {
             group = group.add(bevy_winit::WinitPlugin::default());
+        }
+        #[cfg(feature = "bevy_tasks")]
+        {
+            group = group.add(bevy_core::TaskPoolPlugin::default());
         }
 
         #[cfg(feature = "bevy_render")]
@@ -161,7 +168,6 @@ pub struct MinimalPlugins;
 impl PluginGroup for MinimalPlugins {
     fn build(self) -> PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
-            .add(bevy_core::TaskPoolPlugin::default())
             .add(bevy_core::TypeRegistrationPlugin)
             .add(bevy_core::FrameCountPlugin)
             .add(bevy_time::TimePlugin)

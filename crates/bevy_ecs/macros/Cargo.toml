@@ -15,5 +15,8 @@ syn = "2.0"
 quote = "1.0"
 proc-macro2 = "1.0"
 
+[features]
+no_std = ["bevy_macro_utils/no_std"]
+
 [lints]
 workspace = true

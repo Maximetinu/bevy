@@ -9,19 +9,22 @@ extern crate alloc;
 mod name;
 #[cfg(feature = "serialize")]
 mod serde;
+#[cfg(feature = "bevy_tasks")]
 mod task_pool_options;
 
 use bevy_ecs::system::{ResMut, Resource};
 pub use bytemuck::{bytes_of, cast_slice, Pod, Zeroable};
 pub use name::*;
+#[cfg(feature = "bevy_tasks")]
 pub use task_pool_options::*;
 
 pub mod prelude {
     //! The Bevy Core Prelude.
     #[doc(hidden)]
-    pub use crate::{
-        DebugName, FrameCountPlugin, Name, TaskPoolOptions, TaskPoolPlugin, TypeRegistrationPlugin,
-    };
+    pub use crate::{DebugName, FrameCountPlugin, Name, TypeRegistrationPlugin};
+    #[cfg(feature = "bevy_tasks")]
+    #[doc(hidden)]
+    pub use crate::{TaskPoolOptions, TaskPoolPlugin};
 }
 
 use bevy_app::prelude::*;
@@ -39,8 +42,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-#[cfg(not(target_arch = "wasm32"))]
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(feature = "bevy_tasks", not(target_arch = "wasm32")))]
 use bevy_tasks::tick_global_task_pools_on_main_thread;
 
 /// Registration of default types to the [`TypeRegistry`](bevy_reflect::TypeRegistry) resource.
@@ -118,12 +120,14 @@ fn register_math_types(app: &mut App) {
 
 /// Setup of default task pools: [`AsyncComputeTaskPool`](bevy_tasks::AsyncComputeTaskPool),
 /// [`ComputeTaskPool`](bevy_tasks::ComputeTaskPool), [`IoTaskPool`](bevy_tasks::IoTaskPool).
+#[cfg(feature = "bevy_tasks")]
 #[derive(Default)]
 pub struct TaskPoolPlugin {
     /// Options for the [`TaskPool`](bevy_tasks::TaskPool) created at application start.
     pub task_pool_options: TaskPoolOptions,
 }
 
+#[cfg(feature = "bevy_tasks")]
 impl Plugin for TaskPoolPlugin {
     fn build(&self, _app: &mut App) {
         // Setup the default bevy task pools
@@ -140,7 +144,7 @@ pub struct NonSendMarker(PhantomData<*mut ()>);
 ///
 /// Calls [`tick_global_task_pools_on_main_thread`],
 /// and uses [`NonSendMarker`] to ensure that this system runs on the main thread
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(not(target_arch = "wasm32"), feature = "bevy_tasks"))]
 fn tick_global_task_pools(_main_thread_marker: Option<NonSend<NonSendMarker>>) {
     tick_global_task_pools_on_main_thread();
 }
@@ -184,6 +188,7 @@ mod tests {
     #[test]
     fn runs_spawn_local_tasks() {
         let mut app = App::new();
+        #[cfg(feature = "bevy_tasks")]
         app.add_plugins((TaskPoolPlugin::default(), TypeRegistrationPlugin));
 
         let (async_tx, async_rx) = crossbeam_channel::unbounded();
@@ -218,6 +223,7 @@ mod tests {
     fn frame_counter_update() {
         let mut app = App::new();
         app.add_plugins((
+            #[cfg(feature = "bevy_tasks")]
             TaskPoolPlugin::default(),
             TypeRegistrationPlugin,
             FrameCountPlugin,

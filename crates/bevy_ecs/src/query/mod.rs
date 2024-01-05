@@ -60,7 +60,7 @@ impl<T> DebugCheckedUnwrap for Option<T> {
         if let Some(inner) = self {
             inner
         } else {
-            std::hint::unreachable_unchecked()
+            core::hint::unreachable_unchecked()
         }
     }
 }

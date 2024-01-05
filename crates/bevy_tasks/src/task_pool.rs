@@ -12,10 +12,13 @@ use alloc::{boxed::Box, vec::Vec};
 
 use async_task::FallibleTask;
 use concurrent_queue::ConcurrentQueue;
+#[cfg(feature = "futures-lite")]
 use futures_lite::FutureExt;
 
+#[cfg(any(feature = "async-io", feature = "futures-lite"))]
+use crate::block_on;
+
 use crate::{
-    block_on,
     thread_executor::{ThreadExecutor, ThreadExecutorTicker},
     Task,
 };

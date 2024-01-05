@@ -11,6 +11,7 @@ keywords = ["bevy", "accessibility", "a11y"]
 [features]
 default = ["std", "bevy_app/bevy_reflect"]
 std = ["bevy_app/std", "bevy_ecs/std"]
+no_std = ["bevy_app/no_std", "bevy_derive/no_std", "bevy_ecs/no_std", "rclite"]
 
 [dependencies]
 # bevy

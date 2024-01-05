@@ -109,7 +109,11 @@ impl<'w, 's, D: QueryData, F: QueryFilter> QueryParIter<'w, 's, D, F> {
     /// [`ComputeTaskPool`]: bevy_tasks::ComputeTaskPool
     #[inline]
     pub fn for_each<FN: Fn(QueryItem<'w, D>) + Send + Sync + Clone>(self, func: FN) {
-        #[cfg(any(target = "wasm32", not(feature = "multi-threaded")))]
+        #[cfg(any(
+            target = "wasm32",
+            not(feature = "bevy_tasks"),
+            not(feature = "multi-threaded")
+        ))]
         {
             // SAFETY:
             // This method can only be called once per instance of QueryParIter,
@@ -123,7 +127,11 @@ impl<'w, 's, D: QueryData, F: QueryFilter> QueryParIter<'w, 's, D, F> {
                     .for_each(func);
             }
         }
-        #[cfg(all(not(target = "wasm32"), feature = "multi-threaded"))]
+        #[cfg(all(
+            not(target = "wasm32"),
+            feature = "bevy_tasks",
+            feature = "multi-threaded"
+        ))]
         {
             let thread_count = bevy_tasks::ComputeTaskPool::get().thread_num();
             if thread_count <= 1 {

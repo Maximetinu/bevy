@@ -62,7 +62,11 @@ pub mod prelude {
 pub use bevy_utils::all_tuples;
 
 /// A specialized hashmap type with Key of [`TypeId`]
+#[cfg(feature = "std")]
 type TypeIdMap<V> = rustc_hash::FxHashMap<TypeId, V>;
+
+#[cfg(not(feature = "std"))]
+type TypeIdMap<V> = bevy_utils::HashMap<TypeId, V>;
 
 #[cfg(test)]
 mod tests {

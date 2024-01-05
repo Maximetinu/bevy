@@ -16,7 +16,7 @@ extern crate alloc;
 #[cfg(all(feature = "once_cell", not(feature = "std")))]
 extern crate once_cell;
 #[cfg(all(feature = "once_cell", not(feature = "std")))]
-extern crate parking_lot;
+extern crate spin;
 
 #[cfg(not(feature = "std"))]
 use alloc::boxed::Box;
@@ -43,10 +43,13 @@ pub use cow_arc::*;
 pub use default::default;
 pub use float_ord::*;
 pub use hashbrown;
+#[cfg(feature = "instant")]
+pub use instant::{Duration, Instant};
 pub use petgraph;
 pub use smallvec;
 pub use thiserror;
 pub use tracing;
+#[cfg(feature = "web-time")]
 pub use web_time::{Duration, Instant, SystemTime, SystemTimeError, TryFromFloatSecsError};
 
 #[cfg(feature = "std")]

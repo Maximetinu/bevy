@@ -10,6 +10,7 @@
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 
+#[cfg(feature = "bevy_a11y")]
 use bevy_a11y::Focus;
 
 mod cursor;
@@ -118,6 +119,7 @@ impl Plugin for WindowPlugin {
                 .spawn(primary_window.clone())
                 .insert(PrimaryWindow)
                 .id();
+            #[cfg(feature = "bevy_a11y")]
             if let Some(mut focus) = app.world.get_resource_mut::<Focus>() {
                 **focus = Some(initial_focus);
             }

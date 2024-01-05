@@ -16,11 +16,13 @@ bevy_reflect = ["dep:bevy_reflect", "bevy_ecs/bevy_reflect"]
 std = [
   "bevy_ecs/std",
   "bevy_utils/std",
-  "bevy_tasks/std",
+  "downcast-rs/std",
 
   "serde/std",
   "thiserror/std",
+  "dep:bevy_tasks",
 ]
+no_std = ["bevy_derive/no_std", "bevy_ecs/no_std", "bevy_utils/no_std"]
 
 [dependencies]
 # bevy
@@ -28,12 +30,12 @@ bevy_derive = { path = "../bevy_derive", version = "0.12.0" }
 bevy_ecs = { path = "../bevy_ecs", version = "0.12.0", default-features = false }
 bevy_reflect = { path = "../bevy_reflect", default-features = false, version = "0.12.0", optional = true }
 bevy_utils = { path = "../bevy_utils", default-features = false, version = "0.12.0" }
-bevy_tasks = { path = "../bevy_tasks", default-features = false, version = "0.12.0" }
+bevy_tasks = { path = "../bevy_tasks", default-features = false, version = "0.12.0", optional = true }
 
 # other
 serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
 ron = { version = "0.8.0", optional = true }
-downcast-rs = "1.2.0"
+downcast-rs = { version = "1.2.0", default-features = false }
 thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 
 

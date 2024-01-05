@@ -18,6 +18,7 @@ use crate::{
 };
 use bevy_ecs::prelude::*;
 use bevy_log::{debug, error, trace, warn};
+#[cfg(feature = "bevy_tasks")]
 use bevy_tasks::IoTaskPool;
 use bevy_utils::{BoxedFuture, HashMap, HashSet};
 use futures_io::ErrorKind;
@@ -142,9 +143,17 @@ impl AssetProcessor {
 
     /// Starts the processor in a background thread.
     pub fn start(_processor: Res<Self>) {
-        #[cfg(any(target_arch = "wasm32", not(feature = "multi-threaded")))]
+        #[cfg(any(
+            target_arch = "wasm32",
+            not(feature = "multi-threaded"),
+            not(feature = "std")
+        ))]
         error!("Cannot run AssetProcessor in single threaded mode (or WASM) yet.");
-        #[cfg(all(not(target_arch = "wasm32"), feature = "multi-threaded"))]
+        #[cfg(all(
+            not(target_arch = "wasm32"),
+            feature = "multi-threaded",
+            feature = "std"
+        ))]
         {
             let processor = _processor.clone();
             std::thread::spawn(move || {
@@ -161,7 +170,11 @@ impl AssetProcessor {
     /// * Scan the unprocessed [`AssetReader`] and remove any final processed assets that are invalid or no longer exist.
     /// * For each asset in the unprocessed [`AssetReader`], kick off a new "process job", which will process the asset
     /// (if the latest version of the asset has not been processed).
-    #[cfg(all(not(target_arch = "wasm32"), feature = "multi-threaded"))]
+    #[cfg(all(
+        not(target_arch = "wasm32"),
+        feature = "multi-threaded",
+        feature = "std"
+    ))]
     pub fn process_assets(&self) {
         let start_time = std::time::Instant::now();
         debug!("Processing Assets");
@@ -305,9 +318,17 @@ impl AssetProcessor {
             "Folder {} was added. Attempting to re-process",
             AssetPath::from_path(&path).with_source(source.id())
         );
-        #[cfg(any(target_arch = "wasm32", not(feature = "multi-threaded")))]
+        #[cfg(any(
+            target_arch = "wasm32",
+            not(feature = "std"),
+            not(feature = "multi-threaded")
+        ))]
         error!("AddFolder event cannot be handled in single threaded mode (or WASM) yet.");
-        #[cfg(all(not(target_arch = "wasm32"), feature = "multi-threaded"))]
+        #[cfg(all(
+            not(target_arch = "wasm32"),
+            feature = "std",
+            feature = "multi-threaded"
+        ))]
         IoTaskPool::get().scope(|scope| {
             scope.spawn(async move {
                 self.process_assets_internal(scope, source, path)
@@ -415,7 +436,11 @@ impl AssetProcessor {
     }
 
     #[allow(unused)]
-    #[cfg(all(not(target_arch = "wasm32"), feature = "multi-threaded"))]
+    #[cfg(all(
+        not(target_arch = "wasm32"),
+        feature = "std",
+        feature = "multi-threaded"
+    ))]
     fn process_assets_internal<'scope>(
         &'scope self,
         scope: &'scope bevy_tasks::Scope<'scope, '_, ()>,
@@ -439,6 +464,7 @@ impl AssetProcessor {
         })
     }
 
+    #[cfg(feature = "bevy_tasks")]
     async fn try_reprocessing_queued(&self) {
         loop {
             let mut check_reprocess_queue =
@@ -452,6 +478,22 @@ impl AssetProcessor {
                     });
                 }
             });
+            let infos = self.data.asset_infos.read().await;
+            if infos.check_reprocess_queue.is_empty() {
+                break;
+            }
+        }
+    }
+
+    #[cfg(not(feature = "bevy_tasks"))]
+    async fn try_reprocessing_queued(&self) {
+        loop {
+            let mut check_reprocess_queue =
+                std::mem::take(&mut self.data.asset_infos.write().await.check_reprocess_queue);
+            for path in check_reprocess_queue.drain(..) {
+                let source = self.get_source(path.source()).unwrap();
+                self.process_asset(source, path.into()).await;
+            }
             let infos = self.data.asset_infos.read().await;
             if infos.check_reprocess_queue.is_empty() {
                 break;

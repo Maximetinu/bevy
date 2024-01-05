@@ -10,12 +10,10 @@ keywords = ["bevy"]
 
 [features]
 multi-threaded = []
-std = []
 thread_local_exp = []
 
 [dependencies]
-futures-lite = "2.0.1"
-async-executor = "1.7.2"
+async-executor = { version = "1.7.2", default-features = false }
 async-channel = "1.4.2"
 async-io = { version = "2.0.0", optional = true }
 rclite = { version = "0.2.4", optional = true }

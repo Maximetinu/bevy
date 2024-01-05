@@ -1,4 +1,7 @@
 use bevy_tasks::TaskPoolBuilder;
+#[cfg(feature = "instant")]
+use instant::{Duration, Instant};
+#[cfg(feature = "web-time")]
 use web_time::{Duration, Instant};
 
 // This sample demonstrates a thread pool with one thread per logical core and only one task

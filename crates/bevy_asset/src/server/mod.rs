@@ -17,6 +17,7 @@ use crate::{
 };
 use bevy_ecs::prelude::*;
 use bevy_log::{error, info, warn};
+#[cfg(feature = "bevy_tasks")]
 use bevy_tasks::IoTaskPool;
 use bevy_utils::{CowArc, HashMap, HashSet};
 use crossbeam_channel::{Receiver, Sender};
@@ -154,12 +155,19 @@ impl AssetServer {
             );
             match maybe_loader {
                 MaybeAssetLoader::Ready(_) => unreachable!(),
+
+                #[cfg(feature = "bevy_tasks")]
                 MaybeAssetLoader::Pending { sender, .. } => {
                     IoTaskPool::get()
                         .spawn(async move {
                             let _ = sender.broadcast(loader).await;
                         })
                         .detach();
+                }
+
+                #[cfg(not(feature = "bevy_tasks"))]
+                MaybeAssetLoader::Pending { sender, .. } => {
+                    let _ = sender.broadcast(loader).await;
                 }
             }
         }

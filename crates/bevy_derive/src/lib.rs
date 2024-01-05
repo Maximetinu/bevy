@@ -1,11 +1,17 @@
+#![cfg_attr(feature = "no_std", no_std)]
 extern crate proc_macro;
+
+#[cfg(feature = "no_std")]
+extern crate alloc;
 
 mod app_plugin;
 mod bevy_main;
 mod derefs;
 mod enum_variant_meta;
 
-use bevy_macro_utils::{derive_label, BevyManifest};
+use bevy_macro_utils::derive_label;
+#[cfg(not(feature = "no_std"))]
+use bevy_macro_utils::BevyManifest;
 use proc_macro::TokenStream;
 use quote::format_ident;
 
@@ -203,7 +209,10 @@ pub fn derive_enum_variant_meta(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(AppLabel)]
 pub fn derive_app_label(input: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(input as syn::DeriveInput);
+    #[cfg(not(feature = "no_std"))]
     let mut trait_path = BevyManifest::default().get_path("bevy_app");
+    #[cfg(feature = "no_std")]
+    let mut trait_path: syn::Path = syn::parse_quote!(bevy_app);
     let mut dyn_eq_path = trait_path.clone();
     trait_path.segments.push(format_ident!("AppLabel").into());
     dyn_eq_path.segments.push(format_ident!("DynEq").into());
