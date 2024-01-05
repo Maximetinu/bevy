@@ -9,17 +9,15 @@ license = "MIT OR Apache-2.0"
 keywords = ["bevy"]
 
 [dependencies]
-toml_edit = { version = "0.20", optional = true }
+toml_edit = { version = "0.20" }
 syn = "2.0"
 quote = "1.0"
-rustc-hash = { version = "1.0", optional = true }
+rustc-hash = { version = "1.0" }
 proc-macro2 = "1.0"
-hashbrown = { version = "0.14", features = [], optional = true }
-ahash = { version = "0.8.3", default-features = false, features = ["compile-time-rng"], optional = true }
 
 [features]
-std = ["toml_edit", "rustc-hash"]
-no_std = ["hashbrown", "ahash"]
+std = []
+no_std = []
 
 [lints]
 workspace = true

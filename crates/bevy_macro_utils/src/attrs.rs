@@ -2,9 +2,6 @@ use syn::{Expr, ExprLit, Lit};
 
 use crate::symbol::Symbol;
 
-#[cfg(not(feature = "std"))]
-use alloc::format;
-
 /// Get a [literal string](struct@syn::LitStr) from the provided [expression](Expr).
 pub fn get_lit_str(attr_name: Symbol, value: &Expr) -> syn::Result<&syn::LitStr> {
     if let Expr::Lit(ExprLit {
