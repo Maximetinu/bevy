@@ -10,7 +10,6 @@ mod derefs;
 mod enum_variant_meta;
 
 use bevy_macro_utils::derive_label;
-#[cfg(not(feature = "no_std"))]
 use bevy_macro_utils::BevyManifest;
 use proc_macro::TokenStream;
 use quote::format_ident;

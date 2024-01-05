@@ -1,17 +1,24 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
+#[cfg(not(feature = "no_std"))]
 use std::{env, path::PathBuf};
+#[cfg(feature = "toml_edit")]
 use toml_edit::{Document, Item};
+
+#[cfg(feature = "no_std")]
+use alloc::format;
 
 /// The path to the `Cargo.toml` file for the Bevy project.
 pub struct BevyManifest {
+    #[cfg(feature = "toml_edit")]
     manifest: Document,
 }
 
 impl Default for BevyManifest {
     fn default() -> Self {
         Self {
+            #[cfg(feature = "toml_edit")]
             manifest: env::var_os("CARGO_MANIFEST_DIR")
                 .map(PathBuf::from)
                 .map(|mut path| {
@@ -39,6 +46,7 @@ const BEVY_INTERNAL: &str = "bevy_internal";
 impl BevyManifest {
     /// Attempt to retrieve the [path](syn::Path) of a particular package in
     /// the [manifest](BevyManifest) by [name](str).
+    #[cfg(feature = "toml_edit")]
     pub fn maybe_get_path(&self, name: &str) -> Option<syn::Path> {
         fn dep_package(dep: &Item) -> Option<&str> {
             if dep.as_str().is_some() {
@@ -71,6 +79,11 @@ impl BevyManifest {
 
         deps.and_then(find_in_deps)
             .or_else(|| deps_dev.and_then(find_in_deps))
+    }
+
+    #[cfg(not(feature = "toml_edit"))]
+    fn maybe_get_path(&self, name: &str) -> Option<syn::Path> {
+        return Some(Self::parse_str(name));
     }
 
     /// Returns the path for the crate with the given name.

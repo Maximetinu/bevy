@@ -7,9 +7,7 @@ mod states;
 mod world_query;
 
 use crate::{query_data::derive_query_data_impl, query_filter::derive_query_filter_impl};
-use bevy_macro_utils::{derive_label, ensure_no_collision, get_struct_fields};
-#[cfg(not(feature = "no_std"))]
-use bevy_manifest::BevyManifest;
+use bevy_macro_utils::{derive_label, ensure_no_collision, get_struct_fields, BevyManifest};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::{format_ident, quote};

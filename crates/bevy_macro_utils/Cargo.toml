@@ -15,7 +15,7 @@ quote = "1.0"
 rustc-hash = { version = "1.0", optional = true }
 proc-macro2 = "1.0"
 hashbrown = { version = "0.14", features = [], optional = true }
-ahash = { version = "0.8.3", default-features = false, optional = true }
+ahash = { version = "0.8.3", default-features = false, features = ["compile-time-rng"], optional = true }
 
 [features]
 std = ["toml_edit", "rustc-hash"]

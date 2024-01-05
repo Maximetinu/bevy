@@ -23,6 +23,7 @@ std = [
   "thread_local",
   "rustc-hash",
   "async-channel/std",
+  "event-listener/std",
 ]
 no_std = ["bevy_ecs_macros/no_std", "rclite", "bevy_utils/no_std"]
 
@@ -34,7 +35,7 @@ bevy_utils = { path = "../bevy_utils", version = "0.12.0", default-features = fa
 bevy_ecs_macros = { path = "macros", version = "0.12.0" }
 
 async-channel = { version = "2.1", default-features = false }
-event-listener = "2.5"
+event-listener = { version = "4", default-features = false }
 thread_local = { version = "1.1.4", optional = true }
 fixedbitset = { version = "0.4.2", default-features = false }
 rustc-hash = { version = "1.1", optional = true }

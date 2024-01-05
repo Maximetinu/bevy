@@ -12,7 +12,6 @@ extern crate hashbrown;
 extern crate alloc;
 
 mod attrs;
-#[cfg(feature = "std")]
 mod bevy_manifest;
 pub mod fq_std;
 mod label;
@@ -20,7 +19,6 @@ mod shape;
 mod symbol;
 
 pub use attrs::*;
-#[cfg(feature = "std")]
 pub use bevy_manifest::*;
 pub use label::*;
 pub use shape::*;
