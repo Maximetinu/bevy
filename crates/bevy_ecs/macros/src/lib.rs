@@ -496,7 +496,7 @@ pub(crate) fn bevy_ecs_path() -> syn::Path {
 
 #[cfg(feature = "no_std")]
 pub(crate) fn bevy_ecs_path() -> syn::Path {
-    parse_quote!(bevy_ecs)
+    BevyManifest::default().get_path("bevy_ecs")
 }
 
 #[proc_macro_derive(Event)]
