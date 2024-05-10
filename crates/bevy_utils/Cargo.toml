@@ -27,11 +27,13 @@ no_std = ["once_cell", "instant"]
 ahash = { version = "0.8.3", default-features = false, features = ["compile-time-rng"] }
 tracing = { version = "0.1", default-features = false }
 web-time = { version = "0.2", optional = true }
-instant = { version = "0.1", path = "../../../instant", optional = true, default-features = false }
+# instant = { version = "0.1", path = "../../../instant", optional = true, default-features = false }
+instant = {git = "https://github.com/maximetinu/instant.git", branch = "nostd", optional = true, default-features = false }
 uuid = { version = "1.1", default-features = false, features = ["v4", "serde"] }
 hashbrown = { version = "0.14", features = [] }
 bevy_utils_proc_macros = { version = "0.12.0", path = "macros" }
-petgraph = { path = "../../../petgraph", default-features = false, features = ["no_std", "graphs"] }
+# petgraph = { path = "../../../petgraph", default-features = false, features = ["no_std", "graphs"] }
+petgraph = {git = "https://github.com/maximetinu/petgraph.git", branch = "nostd", default-features = false, features = ["no_std", "graphs"] }
 thiserror = { version = "1.0", package = "thiserror-core", default-features = false }
 nonmax = { version = "0.5", default-features = false }
 smallvec = { version = "1.11", features = ["union", "const_generics"] }
