@@ -25,6 +25,7 @@ pub mod texture;
 pub mod view;
 
 use bevy_hierarchy::ValidParentCheckPlugin;
+use camera::ShouldRender;
 pub use extract_param::Extract;
 
 pub mod prelude {
@@ -372,7 +373,8 @@ impl Plugin for RenderPlugin {
                 .insert_resource(device)
                 .insert_resource(queue)
                 .insert_resource(render_adapter)
-                .insert_resource(adapter_info);
+                .insert_resource(adapter_info)
+                .init_resource::<ShouldRender>();
         }
     }
 }

@@ -600,7 +600,11 @@ pub struct ExtractedCamera {
     pub output_mode: CameraOutputMode,
     pub msaa_writeback: bool,
     pub sorted_camera_index_for_target: usize,
+    pub should_render: bool,
 }
+
+#[derive(Resource, Default, Deref, DerefMut)]
+pub struct ShouldRender(pub bool);
 
 pub fn extract_cameras(
     mut commands: Commands,
@@ -617,6 +621,8 @@ pub fn extract_cameras(
         )>,
     >,
     primary_window: Extract<Query<Entity, With<PrimaryWindow>>>,
+    // should_render: Extract<Res<ShouldRender>>,
+    should_render: Res<ShouldRender>
 ) {
     let primary_window = primary_window.iter().next();
     for (
@@ -659,6 +665,7 @@ pub fn extract_cameras(
                     msaa_writeback: camera.msaa_writeback,
                     // this will be set in sort_cameras
                     sorted_camera_index_for_target: 0,
+                    should_render: **should_render,
                 },
                 ExtractedView {
                     projection: camera.projection_matrix(),
